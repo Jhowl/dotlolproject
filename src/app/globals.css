@@ -105,3 +105,10 @@ a {
     color-scheme: dark;
   }
 }
+
+body {
+	box-sizing: border-box;
+	position: relative;
+	background: #0f0f0f;
+	color: #FFFFFF;
+}

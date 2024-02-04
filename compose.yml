@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    depends_on:
+      - postgres-db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./next.config.js
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: /app
+          action: sync
+      environment:
+            DATABASE_URL: postgres://core:ARv-D~}0q`G5$1K`+#2d@postgres:5432/analytics
+
+  postgres-db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=analytics
+      - POSTGRES_USER=core
+      - POSTGRES_PASSWORD=ARv-D~}0q`G5$1K`+#2d
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  
+volumes:
+  postgres-data:
