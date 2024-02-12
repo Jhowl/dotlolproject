@@ -84,7 +84,7 @@ function Copyright(props) {
   );
 }
 
-export default function Layout({ children }) {
+export default function Layout({ children, title }) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -119,7 +119,7 @@ export default function Layout({ children }) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {title || 'Dashboard'}
             </Typography>
 
           </Toolbar>
