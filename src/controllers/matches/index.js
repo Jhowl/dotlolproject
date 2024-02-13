@@ -79,12 +79,13 @@ class Matches extends Controller {
   //Function to get average score in matches by hero and total matches hero was played,
   //use the tables players and matches
 
-  getAverageDireRadiantScoreByHero = async ({where = '', values = []}) => {
+  getAverageDireRadiantScoreByHero = async (where = '', values = []) => {
     const query = `
       WITH MatchHeroStats AS (
         SELECT
             m.id AS match_id,
             m.radiant_score + m.dire_score AS score,
+            m.duration,
             p.hero_id
         FROM
             matches m
@@ -96,7 +97,8 @@ class Matches extends Controller {
         SELECT
             hero_id,
             COUNT(match_id) AS heroMatches,
-            SUM(score) AS matchesScore
+            SUM(score) AS matchesScore,
+            SUM(duration) AS total_duration
         FROM
             MatchHeroStats
         GROUP BY
@@ -105,7 +107,8 @@ class Matches extends Controller {
     SELECT
         hero_id,
         heroMatches as total_matches,
-        matchesScore / heroMatches as score
+        matchesScore / heroMatches as score,
+        total_duration / heroMatches as duration
     FROM
         HeroAggregates
     ORDER BY

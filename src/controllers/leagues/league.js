@@ -1,28 +1,28 @@
 import Controller from "../controller.js";
 import matches from "../matches/index.js";
 
-class Team extends Controller {
+class League extends Controller {
   constructor(slug) {
-    super({ tableName: "teams" });
+    super({ tableName: "leagues" });
     this.slug = slug;
-    this.team = { team_id: null }; // Initialize team with team_id property
+    this.league = { league_id: null }; // Initialize league with league_id property
     this.matches = [];
-    this.where = 'WHERE radiant_team_id = $1 OR dire_team_id = $1';
+    this.where = 'WHERE league_id = $1';
   }
 
-  async setTeam() {
-    const team = await this.getBySlug();
-    this.team = team;
+  async setLeague() {
+    const league = await this.getBySlug();
+    this.league = league;
   }
 
   async get() {
-    const team = await this.getBySlug();
-    const winrate = await matches.getWinratePercentage(this.team.team_id);
-    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.team.team_id]);
-    const statistics = await this.teamStatistics();
+    const league = await this.getBySlug();
+    const winrate = await matches.getWinratePercentage(this.league.league_id);
+    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.league.league_id]);
+    const statistics = await this.leagueStatistics();
 
     return {
-      team,
+      league,
       matches: await this.getMatches(),
       winrate,
       heroesScoreAverage,
@@ -31,7 +31,7 @@ class Team extends Controller {
   }
 
   async getBySlug() {
-    const query = `SELECT * FROM teams WHERE slug = $1`;
+    const query = `SELECT * FROM leagues WHERE slug = $1`;
     const value = [this.slug];
 
     const res = await this.query(query, value);
@@ -43,13 +43,13 @@ class Team extends Controller {
       return this.matches;
     }
 
-    const teamMatches = await matches.getWhere(this.where, [this.team.team_id]);
-    this.matches = teamMatches;
+    const leagueMatches = await matches.getWhere(this.where, [this.league.league_id]);
+    this.matches = leagueMatches;
 
     return this.matches;
   }
 
-  async teamStatistics() {
+  async leagueStatistics() {
     const columns =`
       MIN(radiant_score + dire_score) AS min_score,
       MAX(radiant_score + dire_score) AS max_score,
@@ -58,58 +58,56 @@ class Team extends Controller {
       MAX(duration) AS max_duration,
       AVG(duration) AS avg_duration,
       AVG(get_first_tower_time) as average_tower_time,
-      SUM(CASE WHEN get_first_tower_team = $1 THEN 1 ELSE 0 END) AS first_tower,
       COUNT(*) AS total_matches
     `;
 
-    const statistics = await matches.getWhere(this.where, [this.team.team_id], columns);
+    const statistics = await matches.getWhere(this.where, [this.league.league_id], columns);
 
     return statistics[0];
   }
 
   async getStandarDeviations() {
-    const standartDeviations = await matches.getStandarDeviations(this.where, [this.team.team_id]);
+    const standartDeviations = await matches.getStandarDeviations(this.where, [this.league.league_id]);
 
     return standartDeviations;
   }
 
   async getWinrate() {
-    const winrate = await matches.getWinratePercentage(this.team.team_id);
+    const winrate = await matches.getWinratePercentage(this.league.league_id);
     return winrate;
   }
 
   async getAverageDireRadiantScoreByHero() {
-    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.team.team_id]);
+    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.league.league_id]);
 
     return heroesScoreAverage;
   }
 
-  async getTeamLeagues() {
+  async getTeams() {
     const query = `
       SELECT
-        l.name,
-        l.league_id
+        t.team_id,
+        t.name
       FROM
-        leagues l
+        matches m
       JOIN
-        matches m ON l.league_id = m.league_id
+        teams t ON m.radiant_team_id = t.team_id OR m.dire_team_id = t.team_id
       WHERE
-        m.radiant_team_id = $1 OR m.dire_team_id = $1
+        m.league_id = $1
       GROUP BY
-        l.name,
-        l.league_id
+        t.team_id,
+        t.name
       ORDER BY
-        l.name
+        t.name
     `;
 
-    const leagues = await this.query(query, [this.team.team_id]);
+    const leagues = await this.query(query, [this.league.league_id]);
 
     return leagues;
   }
 
-
-  async dataTeam() {
-    await this.setTeam();
+  async dataLeague() {
+    await this.setLeague();
 
     const [
       info,
@@ -118,15 +116,15 @@ class Team extends Controller {
       heroesScoreAverage,
       statistics,
       standartDeviations,
-      leagues,
+      teams
     ] = await Promise.all([
       this.getBySlug(),
       this.getMatches(),
       this.getWinrate(),
       this.getAverageDireRadiantScoreByHero(),
-      this.teamStatistics(),
+      this.leagueStatistics(),
       this.getStandarDeviations(),
-      this.getTeamLeagues()
+      this.getTeams()
     ]);
 
     return {
@@ -136,9 +134,9 @@ class Team extends Controller {
       heroesScoreAverage,
       statistics,
       standartDeviations,
-      leagues
+      teams
     };
   }
 }
 
-export default Team;
+export default League;

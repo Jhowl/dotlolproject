@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import dotaconstants from 'dotaconstants';
+import Typography from '@mui/material/Typography';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -25,7 +26,10 @@ export default function DataTable({data}) {
 
 
   return (
-    <div style={{ height: 600, width: '100%' }}>
+    <div style={{ height: 600, width: '100%', padding: 'inherit' }}>
+      <Typography variant="h6" gutterBottom component="div" style={{textAlign: 'center'}}>
+        Hero Standard Deviation
+      </Typography>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -35,21 +39,7 @@ export default function DataTable({data}) {
         //   },
         // }}
         pageSizeOptions={[5, 10]}
-        // checkboxSelection
       />
     </div>
   );
 }
-
-
-// SELECT
-// p.hero_id,
-// m.radiant_score,
-// m.dire_score
-// FROM
-//   players p
-// JOIN
-//   matches m ON p.match_id = m.match_id
-// WHERE
-//   m.radiant_team_id = $1 OR m.dire_team_id = $1
-// `;

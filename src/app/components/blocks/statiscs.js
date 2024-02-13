@@ -44,41 +44,63 @@ export default function Statiscs({data}) {
         value: convertSecondsToTime(parseFloat(data?.avg_duration).toFixed(2)),
         label: 'Avg'
       }
-    }
+    },
+    firstTower: {
+      time: {
+        value: convertSecondsToTime(data?.average_tower_time),
+        label: 'Average'
+      },
+      percent: {
+        value: data?.first_tower ? parseFloat((data?.first_tower / data?.total_matches) * 100).toFixed(2) : 0,
+        label: 'Percent',
+        signal: '%'
+      },
+      duration: {
+        value: data?.first_tower || 0,
+        label: 'Total'
+      }
+    },
   }
 
-
   return (
-    <Grid container spacing={2}>
-      {Object.keys(show).map((key, index) => {
-        return (
+    <div>
+      <Typography variant="h5" component="h1">
+        Statistics ({data?.total_matches} matches)
+      </Typography>
+      <Grid container spacing={2}>
+        {Object.keys(show).map((key, index) => {
+          return (
+            <Grid item xs={6} key={index}>
+              <Typography key={index} variant="h6" component="h2">
+                {key === 'score' ? 'Score' : key === 'duration' ? 'Duration' : 'First Tower'}
+              </Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: 'background.default',
+                  display: 'grid',
+                  gridTemplateColumns: { md: '1fr 1fr' },
+                  gap: 2,
+                }}
+              >
+                {Object.keys(show[key]).map((k, i) => {
+                  if (show[key][k].value !== 0) {
+                    return (
+                      <Item key={i} elevation={6}>
+                        {`${show[key][k].label}: ${show[key][k].value} ${show[key][k].signal || ''}`}
+                      </Item>
+                    )
+                  }
+                }
+                )}
 
-          <Grid item xs={6} key={index}>
-            <Typography key={index} variant="h6" component="h2">
-              {key === 'score' ? 'Score' : 'Duration'}
-            </Typography>
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: 2,
-                bgcolor: 'background.default',
-                display: 'grid',
-                gridTemplateColumns: { md: '1fr 1fr' },
-                gap: 2,
-              }}
-            >
-              {Object.keys(show[key]).map((k, i) => {
-                return (
-                  <Item key={i} elevation={6}>
-                    {`${show[key][k].label}: ${show[key][k].value}`}
-                  </Item>
-                )
-              })}
-            </Box>
-          </Grid>
-        )
-      }
-      )}
-    </Grid>
+              </Box>
+            </Grid>
+          )
+        }
+        )}
+      </Grid>
+    </div>
   );
 }

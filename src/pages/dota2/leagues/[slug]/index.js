@@ -9,26 +9,26 @@ import Table from '@/app/components/blocks/tableHeroAverage';
 import TableStandarDeviation from '@/app/components/blocks/tableStandarDeviation';
 import DataTableMatches from '@/app/components/blocks/tableMatches';
 
-import Team from '@/controllers/teams/team'
+import League from '@/controllers/leagues/league'
 import Statiscs from '@/app/components/blocks/statiscs';
 
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
 
-  const team = new Team(slug);
+  const league = new League(slug);
 
   return {
     props: {
-      team: JSON.parse(JSON.stringify(await team.dataTeam())),
+      league: JSON.parse(JSON.stringify(await league.dataLeague())),
     },
   };
 }
 
-export default function Dashboard({team}) {
-  console.log('team', team)
+export default function Dashboard({league}) {
+  console.log('league', league)
   return (
-    <Layout title={team.info.name}>
+    <Layout title={league.info.name}>
       <Grid container spacing={2}>
         {/* Chart
         <Grid item xs={12} md={8} lg={9}>
@@ -43,30 +43,25 @@ export default function Dashboard({team}) {
             <Chart />
           </Paper>
         </Grid> */}
-        <Grid item xs={12} md={4} lg={3}>
-          Winning Percentage:
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', elevation: 12 }}>
-            <Percent amount={team.winrate}/>
-          </Paper>
-        </Grid>
 
-        <Grid item xs={12} md={4} lg={3}>
+        <Grid item xs={12}>
           <Paper
             sx={{
               p: 2,
               display: 'flex',
               flexDirection: 'column',
-              height: 150,
+              width: '100%',
+              // height: 150,
             }}
           >
+            <Statiscs data={league.statistics} />
           </Paper>
         </Grid>
-        <Statiscs data={team.statistics} />
 
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row'}}>
-            <Table data={team.heroesScoreAverage} />
-            <TableStandarDeviation data={team.standartDeviations} />
+            <Table data={league.heroesScoreAverage} />
+            <TableStandarDeviation data={league.standartDeviations} />
           </Paper>
         </Grid>
 
@@ -77,7 +72,7 @@ export default function Dashboard({team}) {
 
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-            <DataTableMatches matches={team.matches} />
+            <DataTableMatches matches={league.matches} />
           </Paper>
         </Grid>
       </Grid>
