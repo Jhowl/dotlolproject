@@ -29,6 +29,7 @@ class Controller {
       ${where}
         `;
 
+    console.log('queryaaa:', query);
     const res = await pool.query(query, values);
     return res.rows;
   };

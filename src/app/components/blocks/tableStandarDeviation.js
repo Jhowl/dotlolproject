@@ -14,10 +14,14 @@ const columns = [
 
 
 export default function DataTable({data}) {
+  if (!data) {
+    return null;
+  }
+
   const rows = data?.map((hero) => {
     return {
       id: hero.hero_id,
-      heroName: dotaconstants.heroes[hero.hero_id].localized_name + `(${hero.total_matches})`,
+      heroName: dotaconstants?.heroes[hero.hero_id]?.localized_name + `(${hero.total_matches})`,
       44: hero.threshold_44_5_percent,
       48: hero.threshold_48_5_percent,
       52: hero.threshold_52_5_percent,

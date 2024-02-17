@@ -20,13 +20,12 @@ export async function getServerSideProps({ params }) {
 
   return {
     props: {
-      league: JSON.parse(JSON.stringify(await league.dataLeague())),
+      league: JSON.parse(JSON.stringify(await league.data())),
     },
   };
 }
 
 export default function Dashboard({league}) {
-  console.log('league', league)
   return (
     <Layout title={league.info.name}>
       <Grid container spacing={2}>

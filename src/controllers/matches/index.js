@@ -1,50 +1,80 @@
 import Controller from "../controller.js";
-/*
 
-  const matches = `
-    CREATE TABLE IF NOT EXISTS matches (
-      id BIGSERIAL PRIMARY KEY,
-      start_time TIMESTAMP,
-      dire_score BIGINT,
-      radiant_score BIGINT,
-      radiant_win BOOLEAN,
-      league_id BIGINT,
-      radiant_team_id BIGINT,
-      dire_team_id BIGINT,
-      patch TEXT,
-      created_at TIMESTAMP DEFAULT NOW(),
-      duration BIGINT,
-      get_first_tower_time BIGINT,
-      get_first_tower_team BIGINT,
-      match_id BIGINT NOT NULL,
-      CONSTRAINT matches_match_id_key UNIQUE (match_id),
-      CONSTRAINT matches_dire_team_id_fkey FOREIGN KEY (dire_team_id) REFERENCES teams (team_id),
-      CONSTRAINT matches_get_first_tower_team_fkey FOREIGN KEY (get_first_tower_team) REFERENCES teams (team_id),
-      CONSTRAINT matches_league_id_fkey FOREIGN KEY (league_id) REFERENCES leagues (league_id),
-      CONSTRAINT matches_radiant_team_id_fkey FOREIGN KEY (radiant_team_id) REFERENCES teams (team_id)
-    )
-  `;
-
-  const players = `
-    CREATE TABLE IF NOT EXISTS players (
-      id BIGSERIAL PRIMARY KEY,
-      match_id BIGINT,
-      player_slot BIGINT,
-      hero_id BIGINT,
-      kills BIGINT,
-      deaths BIGINT,
-      assists BIGINT,
-      team_id BIGINT,
-      account_id BIGINT,
-      CONSTRAINT players_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches (match_id),
-      CONSTRAINT players_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams (team_id)
-    )
-  `;
-*/
 class Matches extends Controller {
-  constructor() {
+  constructor({ where = '', values = [], filters = {} }) {
     super({ tableName: "matches" });
+    this.where = where;
+    this.values = values;
+    this.matches = [];
+    this.filters = this.prepareFilters(filters);
   }
+
+  prepareFilters = (filters) => {
+    const preparedFilters = {};
+
+    console.log('filters', filters);
+    if (filters.teams) {
+      preparedFilters.teams = filters.teams;
+    }
+
+    if (filters.leagues) {
+      preparedFilters.leagues = filters.leagues;
+    }
+
+    if (filters.heroes) {
+      preparedFilters.heroes = filters.heroes.split(',');
+    }
+
+    if (filters.patches) {
+      preparedFilters.patches = filters.patches;
+    }
+
+    if (filters.startDate) {
+      preparedFilters.startDate = filters.startDate;
+    }
+
+    if (filters.endDate) {
+      preparedFilters.endDate = filters.endDate;
+    }
+
+    return preparedFilters;
+  }
+
+  getWhereFilter = () => {
+    let where = this.where;
+
+    if (this.filters && Object.keys(this.filters).length === 0) {
+      return where;
+    }
+
+    if (this.filters.teams) {
+      where += ` AND (radiant_team_id IN (${this.filters.teams}) OR dire_team_id IN (${this.filters.teams}))`;
+    }
+
+    if (this.filters.leagues) {
+      where += ` AND league_id IN (${this.filters.leagues})`;
+    }
+
+    if (this.filters.heroes) {
+
+      where += ` AND match_id IN (SELECT match_id FROM players WHERE hero_id IN (${this.filters.heroes.join(',')}))`;
+    }
+
+    if (this.filters.patches) {
+      where += ` AND patch IN (${this.filters.patches})`;
+    }
+
+    if (this.filters.startDate) {
+      where += ` AND start_time >= ${this.filters.startDate}`;
+    }
+
+    if (this.filters.endDate) {
+      where += ` AND start_time <= ${this.filters.endDate}`;
+    }
+
+    return where;
+  }
+
 
   getByTeamID = async (teamID) => {
     const query = `SELECT * FROM matches WHERE radiant_team_id = $1 OR dire_team_id = $1`;
@@ -52,34 +82,25 @@ class Matches extends Controller {
     return res;
   }
 
-  getWinratePercentage = async (teamID) => {
-    const query = `
-      SELECT
-        COUNT(*) AS total_matches,
-        SUM(CASE WHEN radiant_team_id = $1 AND radiant_win THEN 1 WHEN dire_team_id = $1 AND NOT radiant_win THEN 1 ELSE 0 END) AS wins
-      FROM matches
-      WHERE radiant_team_id = $1 OR dire_team_id = $1
-    `;
-    const res = await this.query(query, [teamID]);
-    const { total_matches, wins } = res[0];
-    return (wins / total_matches) * 100;
+  async getMatches() {
+    if (this.matches.length) {
+      return this.matches;
+    }
+
+    this.matches = this.getWhere(this.getWhereFilter(), this.values);
+
+    return this.matches;
   }
 
-  getDurationAverage = async (teamID) => {
-    const query = `
-      SELECT
-        AVG(duration) AS average_duration
-      FROM matches
-      WHERE radiant_team_id = $1 OR dire_team_id = $1
-    `;
-    const res = await this.query(query, [teamID]);
-    return res[0];
-  }
+  getAverageDireRadiantScoreByHero = async () => {
+    const heroes = this.filters.heroes ? `AND p.hero_id IN (${this.filters.heroes})` : '';
+    const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
+    const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
+    const startDate = this.filters.startDate ? `AND m.start_time >= ${this.filters.startDate}` : '';
+    const endDate = this.filters.endDate ? `AND m.start_time <= ${this.filters.endDate}` : '';
 
-  //Function to get average score in matches by hero and total matches hero was played,
-  //use the tables players and matches
+    const where = `${this.where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
 
-  getAverageDireRadiantScoreByHero = async (where = '', values = []) => {
     const query = `
       WITH MatchHeroStats AS (
         SELECT
@@ -91,7 +112,7 @@ class Matches extends Controller {
             matches m
         JOIN
             players p ON m.match_id = p.match_id
-          ${where}
+        ${where}
     )
     , HeroAggregates AS (
         SELECT
@@ -115,12 +136,11 @@ class Matches extends Controller {
         heroMatches DESC;
       `;
 
-    const res = await this.query(query, values);
+    const res = await this.query(query, this.values);
     return res;
-  }
+  };
 
-  getDurationsAndScore = async (where = '', values = []) => {
-
+  getDurationsAndScore = async () => {
     const query = `
       SELECT
         duration,
@@ -128,15 +148,23 @@ class Matches extends Controller {
         dire_score
       FROM
         matches
-      ${where}
+      ${this.getWhereFilter()}
     `;
 
-    const res = await this.query(query, values);
+    const res = await this.query(query, this.values);
 
     return res;
-  }
+  };
 
-  getStandarDeviations = async (where = '', values = []) => {
+  getStandarDeviations = async () => {
+    const heroes = this.filters.heroes ? `AND p.hero_id IN (${this.filters.heroes})` : '';
+    const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
+    const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
+    const startDate = this.filters.startDate ? `AND m.start_time >= ${this.filters.startDate}` : '';
+    const endDate = this.filters.endDate ? `AND m.start_time <= ${this.filters.endDate}` : '';
+
+    const where = `${this.where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+
     const query = `
       WITH MatchHeroStats AS (
         SELECT
@@ -187,24 +215,22 @@ class Matches extends Controller {
       HeroScorePercentages;
     `;
 
-    const res = await this.query(query, values);
+    const res = await this.query(query, this.values);
     return res;
-  }
+  };
 
-
-  getFirstTowerAverage = async (where = '', values = []) => {
+  getFirstTowerAverage = async () => {
     const query = `
       SELECT
         AVG(get_first_tower_time) as average_tower_time
       FROM
         matches
-      ${where}
+      ${this.getWhereFilter()}
     `;
 
-    const res = await this.query(query, values);
+    const res = await this.query(query, this.values);
     return res[0];
-  }
-
+  };
 }
 
-export default new Matches();
+export default Matches;

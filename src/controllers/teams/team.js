@@ -1,33 +1,18 @@
 import Controller from "../controller.js";
-import matches from "../matches/index.js";
+import MatchesTeam from "../matches/team.js";
+
+import { heroes } from "dotaconstants";
 
 class Team extends Controller {
   constructor(slug) {
     super({ tableName: "teams" });
     this.slug = slug;
     this.team = { team_id: null }; // Initialize team with team_id property
-    this.matches = [];
-    this.where = 'WHERE radiant_team_id = $1 OR dire_team_id = $1';
   }
 
   async setTeam() {
     const team = await this.getBySlug();
     this.team = team;
-  }
-
-  async get() {
-    const team = await this.getBySlug();
-    const winrate = await matches.getWinratePercentage(this.team.team_id);
-    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.team.team_id]);
-    const statistics = await this.teamStatistics();
-
-    return {
-      team,
-      matches: await this.getMatches(),
-      winrate,
-      heroesScoreAverage,
-      statistics
-    };
   }
 
   async getBySlug() {
@@ -38,57 +23,11 @@ class Team extends Controller {
     return res[0];
   }
 
-  async getMatches() {
-    if (this.matches.length) {
-      return this.matches;
-    }
-
-    const teamMatches = await matches.getWhere(this.where, [this.team.team_id]);
-    this.matches = teamMatches;
-
-    return this.matches;
-  }
-
-  async teamStatistics() {
-    const columns =`
-      MIN(radiant_score + dire_score) AS min_score,
-      MAX(radiant_score + dire_score) AS max_score,
-      AVG(radiant_score + dire_score) AS avg_score,
-      MIN(duration) AS min_duration,
-      MAX(duration) AS max_duration,
-      AVG(duration) AS avg_duration,
-      AVG(get_first_tower_time) as average_tower_time,
-      SUM(CASE WHEN get_first_tower_team = $1 THEN 1 ELSE 0 END) AS first_tower,
-      COUNT(*) AS total_matches
-    `;
-
-    const statistics = await matches.getWhere(this.where, [this.team.team_id], columns);
-
-    return statistics[0];
-  }
-
-  async getStandarDeviations() {
-    const standartDeviations = await matches.getStandarDeviations(this.where, [this.team.team_id]);
-
-    return standartDeviations;
-  }
-
-  async getWinrate() {
-    const winrate = await matches.getWinratePercentage(this.team.team_id);
-    return winrate;
-  }
-
-  async getAverageDireRadiantScoreByHero() {
-    const heroesScoreAverage = await matches.getAverageDireRadiantScoreByHero(this.where, [this.team.team_id]);
-
-    return heroesScoreAverage;
-  }
-
   async getTeamLeagues() {
     const query = `
       SELECT
         l.name,
-        l.league_id
+        l.league_id as id
       FROM
         leagues l
       JOIN
@@ -107,9 +46,32 @@ class Team extends Controller {
     return leagues;
   }
 
+  async getHeroesPlayed() {
+    const query = `
+      SELECT DISTINCT
+          hero_id as id
+      FROM
+          players
+      WHERE
+          team_id = $1
+      `
 
-  async dataTeam() {
+    const result = await this.query(query, [this.team.team_id]);
+
+    if (result.length) {
+      return result.map(hero =>({
+        name: heroes[hero.id].localized_name,
+        ...hero
+      }));
+    }
+
+    return result;
+  }
+
+  async data() {
     await this.setTeam();
+
+    const matchesTeam = new MatchesTeam(this.team.team_id);
 
     const [
       info,
@@ -119,14 +81,16 @@ class Team extends Controller {
       statistics,
       standartDeviations,
       leagues,
+      heroes
     ] = await Promise.all([
       this.getBySlug(),
-      this.getMatches(),
-      this.getWinrate(),
-      this.getAverageDireRadiantScoreByHero(),
-      this.teamStatistics(),
-      this.getStandarDeviations(),
-      this.getTeamLeagues()
+      matchesTeam.getMatches(),
+      matchesTeam.getWinratePercentage(),
+      matchesTeam.getAverageDireRadiantScoreByHero(),
+      matchesTeam.teamStatistics(),
+      matchesTeam.getStandarDeviations(),
+      this.getTeamLeagues(),
+      this.getHeroesPlayed()
     ]);
 
     return {
@@ -136,7 +100,39 @@ class Team extends Controller {
       heroesScoreAverage,
       statistics,
       standartDeviations,
-      leagues
+      leagues,
+      heroes
+    };
+  }
+
+  async dataRest(filters) {
+    await this.setTeam();
+
+    const matchesTeam = new MatchesTeam(this.team.team_id, filters);
+
+    const [
+      info,
+      matches,
+      winrate,
+      heroesScoreAverage,
+      statistics,
+      standartDeviations
+    ] = await Promise.all([
+      this.getBySlug(),
+      matchesTeam.getMatches(),
+      matchesTeam.getWinratePercentage(),
+      matchesTeam.getAverageDireRadiantScoreByHero(),
+      matchesTeam.teamStatistics(),
+      matchesTeam.getStandarDeviations()
+    ]);
+
+    return {
+      info,
+      matches,
+      winrate,
+      heroesScoreAverage,
+      statistics,
+      standartDeviations
     };
   }
 }
