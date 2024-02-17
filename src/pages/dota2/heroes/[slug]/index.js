@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import { heroes } from "dotaconstants";
+
 
 import Layout from '@/app/components/layout';
 import Percent from '@/app/components/blocks/percent';
@@ -11,60 +13,61 @@ import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
 
-import Team from '@/controllers/teams/team'
+import Hero from '@/controllers/heroes/hero'
 import request from '@/app/helper/request';
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
 
-  const team = new Team(slug);
+  const hero = new Hero(slug);
 
   return {
     props: {
-      team: JSON.parse(JSON.stringify(await team.data())),
+      hero: JSON.parse(JSON.stringify(await hero.data())),
     },
   };
 }
 
-export default function TeamPage({team}) {
-  const [selectedHeroes, setSelectedHeroes] = React.useState([]);
+export default function HeroPage({hero}) {
+  console.log(hero);
+  const [selectedTeams, setSelectedTeams] = React.useState([]);
   const [selectedLeagues, setSelectedLeagues] = React.useState([]);
-  const [teamData, setTeamData] = React.useState(team);
+  const [heroData, setTeamData] = React.useState(hero);
 
-  const leagues = team.leagues
-  const heroes = team.heroes
+  const leagues = hero?.leagues
+  const teams = hero?.teams
 
   React.useEffect(() => {
     const fetchData = async () => {
       const params = {
-        heroes: selectedHeroes.map(hero => hero.id),
+        heroes: selectedTeams.map(hero => hero.id),
         leagues: selectedLeagues.map(league => league.id),
       };
 
       try {
-        const res = await request(`/api/dota2/teams/${teamData.info.slug}`, params);
+        const res = await request(`/api/dota2/heroes/${heroData.info.slug}`, params);
         setTeamData(res.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
-    // Execute fetchData if either selectedHeroes or selectedLeagues change
-    if (selectedHeroes.length > 0 || selectedLeagues.length > 0) {
+    // Execute fetchData if either selectedTeams or selectedLeagues change
+    if (selectedTeams.length > 0 || selectedLeagues.length > 0) {
       fetchData();
     } else {
-      // Reset teamData to the original team if no filters are applied
-      setTeamData(team);
+      // Reset heroData to the original team if no filters are applied
+      setTeamData(hero);
     }
-  }, [selectedHeroes, selectedLeagues]);
+  }, [selectedTeams, selectedLeagues]);
 
 
-  const handleHeroesOnChange = (event) => {
+  const handleTeamsOnChange = (event) => {
     const {
       target: { value },
     } = event;
 
-    setSelectedHeroes(value);
+    setSelectedTeams(value);
   }
 
   const handleLeaguesOnChange = (event) => {
@@ -76,11 +79,11 @@ export default function TeamPage({team}) {
   }
 
   return (
-    <Layout title={teamData.info.name}>
+    <Layout title={heroData.info.localized_name}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
-            <MultipleSelect items={heroes} title="Heroes" onChange={handleHeroesOnChange} selected={selectedHeroes} />
+            <MultipleSelect items={teams} title="Teams" onChange={handleTeamsOnChange} selected={selectedTeams} />
             <MultipleSelect items={leagues} title="Leagues" onChange={handleLeaguesOnChange} selected={selectedLeagues} />
           </Paper>
 
@@ -102,16 +105,16 @@ export default function TeamPage({team}) {
         <Grid item xs={12} md={4} lg={3}>
           Winning Percentage:
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', elevation: 12 }}>
-            <Percent amount={teamData.winrate}/>
+            <Percent amount={heroData.winrate}/>
           </Paper>
         </Grid>
 
-        <Statiscs data={teamData.statistics} />
+        <Statiscs data={heroData.statistics} />
 
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row'}}>
-            <Table data={teamData.heroesScoreAverage} />
-            <TableStandarDeviation data={teamData.standartDeviations} />
+            <Table data={heroData.heroesScoreAverage} />
+            <TableStandarDeviation data={heroData.standartDeviations} />
           </Paper>
         </Grid>
 
@@ -122,7 +125,7 @@ export default function TeamPage({team}) {
 
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-            <DataTableMatches matches={teamData.matches} />
+            <DataTableMatches matches={heroData.matches} />
           </Paper>
         </Grid>
       </Grid>

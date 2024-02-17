@@ -1,9 +1,12 @@
+import { heroes } from "dotaconstants";
+
 import Controller from "../controller.js";
 
 class Matches extends Controller {
-  constructor({ where = '', values = [], filters = {} }) {
+  constructor({ where = '', whereInner='', values = [], filters = {} }) {
     super({ tableName: "matches" });
     this.where = where;
+    this.whereInner = whereInner;
     this.values = values;
     this.matches = [];
     this.filters = this.prepareFilters(filters);
@@ -93,13 +96,14 @@ class Matches extends Controller {
   }
 
   getAverageDireRadiantScoreByHero = async () => {
-    const heroes = this.filters.heroes ? `AND p.hero_id IN (${this.filters.heroes})` : '';
+    const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
     const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
     const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
-    const startDate = this.filters.startDate ? `AND m.start_time >= ${this.filters.startDate}` : '';
-    const endDate = this.filters.endDate ? `AND m.start_time <= ${this.filters.endDate}` : '';
+    const startDate = this.filters.startDate ? `AND m.start_time >= '${this.filters.startDate}'` : '';
+    const endDate = this.filters.endDate ? `AND m.start_time <= '${this.filters.endDate}'` : '';
 
-    const where = `${this.where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+    const where = this.whereInner ? this.whereInner : this.where;
+    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
 
     const query = `
       WITH MatchHeroStats AS (
@@ -112,7 +116,7 @@ class Matches extends Controller {
             matches m
         JOIN
             players p ON m.match_id = p.match_id
-        ${where}
+        ${search}
     )
     , HeroAggregates AS (
         SELECT
@@ -156,14 +160,36 @@ class Matches extends Controller {
     return res;
   };
 
+  async getHeroes() {
+    const where = this.whereInner ? this.whereInner : this.where;
+
+    const query = `
+      SELECT DISTINCT
+          p.hero_id
+      FROM
+          matches m
+      JOIN
+          players p ON m.match_id = p.match_id
+      ${where}
+    `;
+
+    const res = await this.query(query, this.values);
+
+    return res.map(hero => ({
+      name: heroes[hero.hero_id].localized_name,
+      id: hero.hero_id
+    }));
+  }
+
   getStandarDeviations = async () => {
-    const heroes = this.filters.heroes ? `AND p.hero_id IN (${this.filters.heroes})` : '';
+    const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
     const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
     const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
     const startDate = this.filters.startDate ? `AND m.start_time >= ${this.filters.startDate}` : '';
     const endDate = this.filters.endDate ? `AND m.start_time <= ${this.filters.endDate}` : '';
 
-    const where = `${this.where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+    const where = this.whereInner ? this.whereInner : this.where;
+    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
 
     const query = `
       WITH MatchHeroStats AS (
@@ -175,7 +201,7 @@ class Matches extends Controller {
             matches m
         JOIN
             players p ON m.match_id = p.match_id
-        ${where}
+        ${search}
     )
     , HeroScoreData AS (
       SELECT

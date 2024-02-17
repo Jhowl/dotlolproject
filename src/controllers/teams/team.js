@@ -87,7 +87,7 @@ class Team extends Controller {
       matchesTeam.getMatches(),
       matchesTeam.getWinratePercentage(),
       matchesTeam.getAverageDireRadiantScoreByHero(),
-      matchesTeam.teamStatistics(),
+      matchesTeam.statistics(),
       matchesTeam.getStandarDeviations(),
       this.getTeamLeagues(),
       this.getHeroesPlayed()
@@ -122,7 +122,7 @@ class Team extends Controller {
       matchesTeam.getMatches(),
       matchesTeam.getWinratePercentage(),
       matchesTeam.getAverageDireRadiantScoreByHero(),
-      matchesTeam.teamStatistics(),
+      matchesTeam.statistics(),
       matchesTeam.getStandarDeviations()
     ]);
 

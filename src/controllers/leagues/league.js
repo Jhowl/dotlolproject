@@ -23,7 +23,7 @@ class League extends Controller {
   async getTeams() {
     const query = `
       SELECT
-        t.team_id,
+        t.team_id as id,
         t.name
       FROM
         matches m
@@ -44,7 +44,41 @@ class League extends Controller {
   }
 
 
-  async data(filters = {}) {
+  async data() {
+    await this.setLeague();
+
+    const leagueMatches = new LeagueMatches(this.league.league_id);
+
+    const [
+      info,
+      matches,
+      heroesScoreAverage,
+      statistics,
+      standartDeviations,
+      teams,
+      heroes
+    ] = await Promise.all([
+      this.getBySlug(),
+      leagueMatches.getMatches(),
+      leagueMatches.getAverageDireRadiantScoreByHero(),
+      leagueMatches.leagueStatistics(),
+      leagueMatches.getStandarDeviations(),
+      this.getTeams(),
+      leagueMatches.getHeroes()
+    ]);
+
+    return {
+      info,
+      matches,
+      heroesScoreAverage,
+      statistics,
+      standartDeviations,
+      teams,
+      heroes
+    };
+  }
+
+  async dataRest(filters = {}) {
     await this.setLeague();
 
     const leagueMatches = new LeagueMatches(this.league.league_id, filters);
@@ -54,15 +88,13 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
-      standartDeviations,
-      teams
+      standartDeviations
     ] = await Promise.all([
       this.getBySlug(),
       leagueMatches.getMatches(),
       leagueMatches.getAverageDireRadiantScoreByHero(),
       leagueMatches.leagueStatistics(),
       leagueMatches.getStandarDeviations(),
-      this.getTeams()
     ]);
 
     return {
@@ -70,8 +102,7 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
-      standartDeviations,
-      teams
+      standartDeviations
     };
   }
 }

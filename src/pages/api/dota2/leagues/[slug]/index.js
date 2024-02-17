@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
     const result = new League(slug)
 
-    const data = await result.data(rest)
+    const data = await result.dataRest(rest)
 
     res.status(200).send({ data })
 

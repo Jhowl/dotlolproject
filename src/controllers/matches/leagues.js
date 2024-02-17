@@ -5,7 +5,7 @@ class League extends Matches {
     super({
       where: 'WHERE league_id = $1',
       values: [id],
-      ...filters
+      filters
     });
   }
 
@@ -21,7 +21,7 @@ class League extends Matches {
       COUNT(*) AS total_matches
     `;
 
-    const statistics = await this.getWhere(this.where, this.values, columns);
+    const statistics = await this.getWhere(this.getWhereFilter(), this.values, columns);
 
     return statistics[0];
   }

@@ -9,7 +9,7 @@ class Team extends Matches {
     });
   }
 
-  async teamStatistics() {
+  async statistics() {
     const columns =`
       MIN(radiant_score + dire_score) AS min_score,
       MAX(radiant_score + dire_score) AS max_score,
