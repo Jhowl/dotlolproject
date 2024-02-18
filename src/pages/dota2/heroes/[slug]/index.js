@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { heroes } from "dotaconstants";
-
 
 import Layout from '@/app/components/layout';
 import Percent from '@/app/components/blocks/percent';
@@ -29,7 +27,6 @@ export async function getServerSideProps({ params }) {
 }
 
 export default function HeroPage({hero}) {
-  console.log(hero);
   const [selectedTeams, setSelectedTeams] = React.useState([]);
   const [selectedLeagues, setSelectedLeagues] = React.useState([]);
   const [heroData, setTeamData] = React.useState(hero);

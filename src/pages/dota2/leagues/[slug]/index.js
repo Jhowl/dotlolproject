@@ -72,7 +72,6 @@ export default function LeaguePage({league}) {
       target: { value },
     } = event;
 
-    console.log(value)
     setSelectedTeams(value);
   }
 

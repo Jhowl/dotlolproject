@@ -15,7 +15,10 @@ class Matches extends Controller {
   prepareFilters = (filters) => {
     const preparedFilters = {};
 
-    console.log('filters', filters);
+    if (Object.keys(filters).length === 0) {
+      return preparedFilters;
+    }
+
     if (filters.teams) {
       preparedFilters.teams = filters.teams;
     }
@@ -78,19 +81,21 @@ class Matches extends Controller {
     return where;
   }
 
-
-  getByTeamID = async (teamID) => {
-    const query = `SELECT * FROM matches WHERE radiant_team_id = $1 OR dire_team_id = $1`;
-    const res = await this.query(query, [teamID]);
-    return res;
-  }
-
   async getMatches() {
+    let matches
+
     if (this.matches.length) {
       return this.matches;
     }
 
-    this.matches = this.getWhere(this.getWhereFilter(), this.values);
+    const filters = this.getWhereFilter();
+
+    if(!filters) {
+      this.matches = await this.getAll();
+      return this.matches;
+    }
+
+    this.matches =  await this.getWhere(this.getWhereFilter(), this.values);
 
     return this.matches;
   }
@@ -257,6 +262,23 @@ class Matches extends Controller {
     const res = await this.query(query, this.values);
     return res[0];
   };
+
+  async statistics() {
+    const columns =`
+      MIN(radiant_score + dire_score) AS min_score,
+      MAX(radiant_score + dire_score) AS max_score,
+      AVG(radiant_score + dire_score) AS avg_score,
+      MIN(duration) AS min_duration,
+      MAX(duration) AS max_duration,
+      AVG(duration) AS avg_duration,
+      AVG(get_first_tower_time) as average_tower_time,
+      COUNT(*) AS total_matches
+    `;
+
+    const statistics = await this.getWhere(this.getWhereFilter(), this.values, columns);
+
+    return statistics[0];
+  }
 }
 
 export default Matches;

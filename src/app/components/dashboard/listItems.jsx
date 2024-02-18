@@ -31,17 +31,17 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Leagues" />
     </ListItemButton>
-    <ListItemButton component={Link} href="/dota2/personal-filters">
+    <ListItemButton component={Link} href="/dota2/heroes">
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
-      <ListItemText primary="Personal Filters" />
+      <ListItemText primary="Heroes" />
     </ListItemButton>
-    <ListItemButton component={Link} href="/dota2/integrations">
+    <ListItemButton component={Link} href="/dota2/explorer">
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>
-      <ListItemText primary="Integrations" />
+      <ListItemText primary="Explorer" />
     </ListItemButton>
   </React.Fragment>
 );

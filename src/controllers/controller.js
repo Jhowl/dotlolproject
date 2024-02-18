@@ -13,13 +13,6 @@ class Controller {
   };
 
   getWhere = async (where, values, columns = '*') => {
-    if (!where) {
-      throw new Error('Where is required.');
-    }
-
-    if (!Array.isArray(values)) {
-      throw new Error('Values must be an array.');
-    }
 
     const query = `
       SELECT
