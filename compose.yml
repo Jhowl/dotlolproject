@@ -12,8 +12,6 @@ services:
     volumes:
       - .:/app/
       - /app/node_modules
-      environment:
-            DATABASE_URL: postgres://core:ARv-D~}0q`G51K`+#2d@postgres:5432/analytics
 
   postgres-db:
     image: postgres:latest
