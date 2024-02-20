@@ -8,11 +8,11 @@ import { styled } from '@mui/material/styles';
 import { convertSecondsToTime } from '@/app/helper/utils';
 
 const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
+  padding: theme.spacing(2),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  height: 60,
-  lineHeight: '60px',
 }));
 
 export default function Statiscs({data}) {
@@ -63,44 +63,34 @@ export default function Statiscs({data}) {
   }
 
   return (
-    <div>
+    <Box sx={{ flexGrow: 1 }}>
       <Typography variant="h5" component="h1">
         Statistics ({data?.total_matches} matches)
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={3} style={{ justifyContent: 'space-around' }}>
         {Object.keys(show).map((key, index) => {
           return (
-            <Grid item xs={6} key={index}>
-              <Typography key={index} variant="h6" component="h2">
+            <Grid item xs={2} sm={4} md={4} key={index}>
+              <Typography key={index} variant="h6" component="h2" style={{ textAlign: 'center' }}>
                 {key === 'score' ? 'Score' : key === 'duration' ? 'Duration' : 'First Tower'}
               </Typography>
-              <Box
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: 'background.default',
-                  display: 'grid',
-                  gridTemplateColumns: { md: '1fr 1fr' },
-                  gap: 2,
-                }}
-              >
+              <Item>
                 {Object.keys(show[key]).map((k, i) => {
                   if (show[key][k].value !== 0) {
                     return (
-                      <Item key={i} elevation={6}>
+                      <div key={i}>
                         {`${show[key][k].label}: ${show[key][k].value} ${show[key][k].signal || ''}`}
-                      </Item>
+                      </div>
                     )
                   }
                 }
                 )}
-
-              </Box>
+              </Item>
             </Grid>
           )
         }
         )}
       </Grid>
-    </div>
+    </Box>
   );
 }
