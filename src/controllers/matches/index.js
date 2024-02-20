@@ -253,7 +253,7 @@ class Matches extends Controller {
   getFirstTowerAverage = async () => {
     const query = `
       SELECT
-        AVG(get_first_tower_time) as average_tower_time
+        AVG(first_tower_time) as average_tower_time
       FROM
         matches
       ${this.getWhereFilter()}
@@ -271,7 +271,7 @@ class Matches extends Controller {
       MIN(duration) AS min_duration,
       MAX(duration) AS max_duration,
       AVG(duration) AS avg_duration,
-      AVG(get_first_tower_time) as average_tower_time,
+      AVG(first_tower_time) as average_tower_time,
       COUNT(*) AS total_matches
     `;
 

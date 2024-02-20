@@ -12,18 +12,8 @@ services:
     volumes:
       - .:/app/
       - /app/node_modules
-    develop:
-      watch:
-        - path: ./package.json
-          action: rebuild
-        - path: ./next.config.js
-          action: rebuild
-        - path: ./package-lock.json
-          action: rebuild
-        - path: /app
-          action: sync
       environment:
-            DATABASE_URL: postgres://core:ARv-D~}0q`G5$1K`+#2d@postgres:5432/analytics
+            DATABASE_URL: postgres://core:ARv-D~}0q`G51K`+#2d@postgres:5432/analytics
 
   postgres-db:
     image: postgres:latest
@@ -33,7 +23,7 @@ services:
     environment:
       - POSTGRES_DB=analytics
       - POSTGRES_USER=core
-      - POSTGRES_PASSWORD=ARv-D~}0q`G5$1K`+#2d
+      - POSTGRES_PASSWORD=ARv-D~}0q`G51K`+#2d
     expose:
       - 5432
     healthcheck:
@@ -44,6 +34,6 @@ services:
     ports:
       - "5432:5432"
 
-  
+
 volumes:
   postgres-data:

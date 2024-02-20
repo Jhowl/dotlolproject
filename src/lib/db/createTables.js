@@ -26,13 +26,13 @@ create table
     patch text null,
     created_at timestamp with time zone not null default now(),
     duration bigint null,
-    get_first_tower_time bigint null,
-    get_first_tower_team bigint null,
+    first_tower_time bigint null,
+    first_tower_team bigint null,
     match_id bigint not null,
     constraint matches_pkey primary key (id),
     constraint matches_match_id_key unique (match_id),
     constraint matches_dire_team_id_fkey foreign key (dire_team_id) references teams (team_id),
-    constraint matches_get_first_tower_team_fkey foreign key (get_first_tower_team) references teams (team_id),
+    constraint matches_first_tower_team_fkey foreign key (first_tower_team) references teams (team_id),
     constraint matches_league_id_fkey foreign key (league_id) references leagues (league_id),
     constraint matches_radiant_team_id_fkey foreign key (radiant_team_id) references teams (team_id)
   ) tablespace pg_default;
@@ -101,12 +101,12 @@ const createTables = async () => {
       patch TEXT,
       created_at TIMESTAMP DEFAULT NOW(),
       duration BIGINT,
-      get_first_tower_time BIGINT,
-      get_first_tower_team BIGINT,
+      first_tower_time BIGINT,
+      first_tower_team BIGINT,
       match_id BIGINT NOT NULL,
       CONSTRAINT matches_match_id_key UNIQUE (match_id),
       CONSTRAINT matches_dire_team_id_fkey FOREIGN KEY (dire_team_id) REFERENCES teams (team_id),
-      CONSTRAINT matches_get_first_tower_team_fkey FOREIGN KEY (get_first_tower_team) REFERENCES teams (team_id),
+      CONSTRAINT matches_first_tower_team_fkey FOREIGN KEY (first_tower_team) REFERENCES teams (team_id),
       CONSTRAINT matches_league_id_fkey FOREIGN KEY (league_id) REFERENCES leagues (league_id),
       CONSTRAINT matches_radiant_team_id_fkey FOREIGN KEY (radiant_team_id) REFERENCES teams (team_id)
     )

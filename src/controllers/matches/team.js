@@ -17,8 +17,8 @@ class Team extends Matches {
       MIN(duration) AS min_duration,
       MAX(duration) AS max_duration,
       AVG(duration) AS avg_duration,
-      AVG(get_first_tower_time) as average_tower_time,
-      SUM(CASE WHEN get_first_tower_team = $1 THEN 1 ELSE 0 END) AS first_tower,
+      AVG(first_tower_time) as average_tower_time,
+      SUM(CASE WHEN first_tower_team = $1 THEN 1 ELSE 0 END) AS first_tower,
       COUNT(*) AS total_matches
     `;
 
