@@ -153,19 +153,16 @@ const createTables = async () => {
 
 export default createTables;
 
-INSERT INTO matches(order_date, customer_id)
-VALUES('2020-08-01',1);
+// core
+// RItChlTZ6oqtJapvFydRT1FFi
 
-core
-RItChlTZ6oqtJapvFydRT1FFi
+// CREATE USER core WITH PASSWORD 'RItChlTZ6oqtJapvFydRT1FFi';
+// GRANT ALL PRIVILEGES ON DATABASE analytics TO core;
 
-CREATE USER core WITH PASSWORD 'RItChlTZ6oqtJapvFydRT1FFi';
-GRANT ALL PRIVILEGES ON DATABASE analytics TO core;
+// GRANT INSERT ON TABLE matches TO core;
+// GRANT INSERT ON TABLE players TO core;
+// GRANT INSERT ON TABLE teams TO core;
+// GRANT INSERT ON TABLE leagues TO core;
 
-GRANT INSERT ON TABLE matches TO core;
-GRANT INSERT ON TABLE players TO core;
-GRANT INSERT ON TABLE teams TO core;
-GRANT INSERT ON TABLE leagues TO core;
-
-GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO core;
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO core;
+// GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO core;
+// GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO core;
