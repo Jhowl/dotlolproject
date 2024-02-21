@@ -73,6 +73,7 @@ create table
 
     // create the tables
 
+import { Corben } from 'next/font/google/index.js';
 import pool from './index.js';
 
 const createTables = async () => {
@@ -85,7 +86,7 @@ const createTables = async () => {
       league_id BIGINT NOT NULL,
       slug TEXT DEFAULT '',
       CONSTRAINT leagues_league_id_key UNIQUE (league_id)
-    )
+    );
   `;
 
   const matches = `
@@ -109,7 +110,7 @@ const createTables = async () => {
       CONSTRAINT matches_first_tower_team_fkey FOREIGN KEY (first_tower_team) REFERENCES teams (team_id),
       CONSTRAINT matches_league_id_fkey FOREIGN KEY (league_id) REFERENCES leagues (league_id),
       CONSTRAINT matches_radiant_team_id_fkey FOREIGN KEY (radiant_team_id) REFERENCES teams (team_id)
-    )
+    );
   `;
 
   const players = `
@@ -125,7 +126,7 @@ const createTables = async () => {
       account_id BIGINT,
       CONSTRAINT players_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches (match_id),
       CONSTRAINT players_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams (team_id)
-    )
+    );
   `;
 
   const teams = `
@@ -137,7 +138,7 @@ const createTables = async () => {
       logo_url TEXT,
       team_id BIGINT,
       CONSTRAINT teams_team_id_key UNIQUE (team_id)
-    )
+    );
   `;
 
   // await pool.query(teams);
@@ -151,3 +152,20 @@ const createTables = async () => {
 
 
 export default createTables;
+
+INSERT INTO matches(order_date, customer_id)
+VALUES('2020-08-01',1);
+
+core
+RItChlTZ6oqtJapvFydRT1FFi
+
+CREATE USER core WITH PASSWORD 'RItChlTZ6oqtJapvFydRT1FFi';
+GRANT ALL PRIVILEGES ON DATABASE analytics TO core;
+
+GRANT INSERT ON TABLE matches TO core;
+GRANT INSERT ON TABLE players TO core;
+GRANT INSERT ON TABLE teams TO core;
+GRANT INSERT ON TABLE leagues TO core;
+
+GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO core;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO core;

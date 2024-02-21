@@ -5,8 +5,9 @@ import { Pool } from 'pg';
 const pool = new Pool({
   user: 'core',
   host: 'localhost',
-  database: 'analytics',
-  password: 'ARv-D~}0q`G51K`+#2d'
+  //165.227.95.74
+  database: 'postgres',
+  password: 'RItChlTZ6oqtJapvFydRT1FFi'
 });
 
 export default pool;
