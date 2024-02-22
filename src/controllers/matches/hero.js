@@ -4,6 +4,7 @@ class Hero extends Matches {
   constructor(id, filters = {}) {
     super({
       where: 'WHERE match_id IN (SELECT match_id FROM players WHERE hero_id = $1)',
+      join: 'JOIN players p ON m.match_id = p.match_id',
       whereInner: 'WHERE p.match_id IN (SELECT match_id FROM players WHERE hero_id = $1)',
       values: [id],
       filters

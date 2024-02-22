@@ -3,12 +3,13 @@ import { heroes } from "dotaconstants";
 import Controller from "../controller.js";
 
 class Matches extends Controller {
-  constructor({ where = '', whereInner='', values = [], filters = {} }) {
+  constructor({ where = '', whereInner='', values = [], join='', filters = {} }) {
     super({ tableName: "matches" });
     this.where = where;
     this.whereInner = whereInner;
     this.values = values;
     this.matches = [];
+    this.join = join;
     this.filters = this.prepareFilters(filters);
   }
 
@@ -86,7 +87,14 @@ class Matches extends Controller {
       return this.matches;
     }
 
-    const filters = this.getWhereFilter() || ''
+    const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
+    const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
+    const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
+    const startDate = this.filters.startDate ? `AND m.start_time >= '${this.filters.startDate}'` : '';
+    const endDate = this.filters.endDate ? `AND m.start_time <= '${this.filters.endDate}'` : '';
+
+    const where = this.whereInner ? this.whereInner : this.where;
+    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
 
     const query = `
       SELECT
@@ -111,7 +119,8 @@ class Matches extends Controller {
           teams dt ON m.dire_team_id = dt.team_id
       JOIN
           leagues l ON m.league_id = l.league_id
-      ${filters}
+      ${this.join}
+      ${search}
       ORDER BY
           m.start_time DESC
       LIMIT 100;

@@ -4,6 +4,7 @@ class League extends Matches {
   constructor(id, filters = {}) {
     super({
       where: 'WHERE league_id = $1',
+      whereInner: 'WHERE m.league_id = $1',
       values: [id],
       filters
     });
