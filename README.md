@@ -34,3 +34,26 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## pm2
+
+To run the code
+
+pm2 start npm -- start
+
+## postgre Config
+
+core
+RItChlTZ6oqtJapvFydRT1FFi
+
+CREATE USER core WITH PASSWORD 'RItChlTZ6oqtJapvFydRT1FFi';
+GRANT ALL PRIVILEGES ON DATABASE analytics TO core;
+
+GRANT INSERT ON TABLE matches TO core;
+GRANT INSERT ON TABLE players TO core;
+GRANT INSERT ON TABLE teams TO core;
+GRANT INSERT ON TABLE leagues TO core;
+
+GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO core;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO core;
+

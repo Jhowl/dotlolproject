@@ -13,6 +13,3 @@ EXPOSE 3000
 
 # For production
 CMD ["npm", "run", "start"]
-
-#  create postgres container
-# docker run --name postgres -e POSTGRES_PASSWORD=ARv-D~}0q`G5$1K`+#2d -d -p 5432:5432 postgres
