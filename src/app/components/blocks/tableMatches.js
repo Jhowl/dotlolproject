@@ -21,7 +21,6 @@ const columns = [
 
 export default function DataTableMatches({matches}) {
   const rows = matches?.map((match) => {
-    console.log('match', match.start_time, new Date(match.start_time * 1000).toLocaleString());
     return {
       id: match.match_id,
       start_time: formatDateTime(match.start_time.toLocaleString()),
