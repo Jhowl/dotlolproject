@@ -2,20 +2,12 @@ import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
-import { convertSecondsToTime } from '@/app/helper/utils';
+import { convertSecondsToTime, formatDateTime } from '@/app/helper/utils';
 
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 110 },
+  { field: 'start_time', headerName: 'Start Time (en-US/PT)', width: 200 },
   { field: 'duration', headerName: 'Duration', width: 90 },
   { field: 'radiant_score', headerName: 'Radiant Score', width: 100 },
   { field: 'dire_score', headerName: 'Dire Score', width: 100 },
@@ -29,8 +21,10 @@ const columns = [
 
 export default function DataTableMatches({matches}) {
   const rows = matches?.map((match) => {
+    console.log('match', match.start_time, new Date(match.start_time * 1000).toLocaleString());
     return {
       id: match.match_id,
+      start_time: formatDateTime(match.start_time.toLocaleString()),
       radiant_score: match.radiant_score,
       dire_score: match.dire_score,
       radiant_name: match.radiant_name,

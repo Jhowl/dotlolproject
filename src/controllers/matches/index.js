@@ -102,6 +102,7 @@ class Matches extends Controller {
         m.duration,
         m.dire_score,
         m.radiant_score,
+        m.start_time,
         CASE
             WHEN m.radiant_win THEN rt.name
             ELSE dt.name
