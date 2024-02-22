@@ -7,6 +7,20 @@ class Hero extends Matches {
       join: 'JOIN players p ON m.match_id = p.match_id',
       whereInner: 'WHERE p.match_id IN (SELECT match_id FROM players WHERE hero_id = $1)',
       values: [id],
+      groupBy: `
+        GROUP BY
+          m.match_id,
+          rt.name,
+          dt.name,
+          l.name,
+          m.start_time,
+          m.radiant_win,
+          m.first_tower_time,
+          m.dire_score,
+          m.radiant_score,
+          m.duration,
+          winner
+      `,
       filters
     });
   }

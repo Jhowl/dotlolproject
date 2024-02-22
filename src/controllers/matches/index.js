@@ -3,13 +3,14 @@ import { heroes } from "dotaconstants";
 import Controller from "../controller.js";
 
 class Matches extends Controller {
-  constructor({ where = '', whereInner='', values = [], join='', filters = {} }) {
+  constructor({ where = '', whereInner='', values = [], join='', groupBy='', filters = {} }) {
     super({ tableName: "matches" });
     this.where = where;
     this.whereInner = whereInner;
     this.values = values;
     this.matches = [];
     this.join = join;
+    this.groupBy = groupBy;
     this.filters = this.prepareFilters(filters);
   }
 
@@ -122,6 +123,7 @@ class Matches extends Controller {
           leagues l ON m.league_id = l.league_id
       ${this.join}
       ${search}
+      ${this.groupBy}
       ORDER BY
           m.start_time DESC
       LIMIT 100;
