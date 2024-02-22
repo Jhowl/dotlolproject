@@ -82,20 +82,43 @@ class Matches extends Controller {
   }
 
   async getMatches() {
-    let matches
-
     if (this.matches.length) {
       return this.matches;
     }
 
-    const filters = this.getWhereFilter();
+    const filters = this.getWhereFilter() || ''
 
-    if(!filters) {
-      this.matches = await this.getAll();
-      return this.matches;
-    }
+    const query = `
+      SELECT
+        m.match_id,
+        m.duration,
+        m.dire_score,
+        m.radiant_score,
+        CASE
+            WHEN m.radiant_win THEN rt.name
+            ELSE dt.name
+        END AS winner,
+        rt.name AS radiant_name,
+        dt.name AS dire_name,
+        l.name  AS league_name,
+        rt.name AS first_tower_team_name,
+        m.first_tower_time
+      FROM
+          matches m
+      JOIN
+          teams rt ON m.radiant_team_id = rt.team_id
+      JOIN
+          teams dt ON m.dire_team_id = dt.team_id
+      JOIN
+          leagues l ON m.league_id = l.league_id
+      ${filters}
+      ORDER BY
+          m.start_time DESC
+      LIMIT 100;
+    `;
 
-    this.matches =  await this.getWhere(this.getWhereFilter(), this.values);
+    const res = await this.query(query, this.values);
+    this.matches = res;
 
     return this.matches;
   }
