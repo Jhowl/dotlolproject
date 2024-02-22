@@ -152,17 +152,3 @@ const createTables = async () => {
 
 
 export default createTables;
-
-// core
-// RItChlTZ6oqtJapvFydRT1FFi
-
-// CREATE USER core WITH PASSWORD 'RItChlTZ6oqtJapvFydRT1FFi';
-// GRANT ALL PRIVILEGES ON DATABASE analytics TO core;
-
-// GRANT INSERT ON TABLE matches TO core;
-// GRANT INSERT ON TABLE players TO core;
-// GRANT INSERT ON TABLE teams TO core;
-// GRANT INSERT ON TABLE leagues TO core;
-
-// GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO core;
-// GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO core;
