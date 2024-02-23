@@ -22,7 +22,7 @@ class League extends Controller {
 
   async getLastsLeagues() {
     const query = `
-      SELECT l.league_id, l.name, MAX(m.start_time) AS start_time,
+      SELECT l.league_id as id, l.name, MAX(m.start_time) AS start_time
       FROM matches m
       JOIN leagues l ON m.league_id = l.league_id
       GROUP BY l.league_id, l.name
