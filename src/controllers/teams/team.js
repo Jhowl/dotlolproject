@@ -46,6 +46,20 @@ class Team extends Controller {
     return leagues;
   }
 
+  getLastsTeamsPlayed() {
+    const query = `
+      SELECT t.team_id, t.name, t.logo_url, MAX(m.start_time) AS start_time
+      FROM teams t
+      JOIN players p ON t.team_id = p.team_id
+      JOIN matches m ON p.match_id = m.match_id
+      GROUP BY t.team_id, t.name, t.logo_url
+      ORDER BY MAX(m.start_time)
+      DESC;
+    `;
+
+    return this.query(query);
+  }
+
   async getHeroesPlayed() {
     const query = `
       SELECT DISTINCT

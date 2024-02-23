@@ -20,13 +20,13 @@ class League extends Controller {
     return res[0];
   }
 
-  async getLeagues() {
+  async getLastsLeagues() {
     const query = `
-      SELECT l.league_id, l.name, MIN(m.start_time) AS start_time
+      SELECT l.league_id, l.name, MAX(m.start_time) AS start_time,
       FROM matches m
       JOIN leagues l ON m.league_id = l.league_id
       GROUP BY l.league_id, l.name
-      ORDER BY MIN(m.start_time)
+      ORDER BY MAX(m.start_time)
       DESC;
     `;
     const leagues = await this.query(query);

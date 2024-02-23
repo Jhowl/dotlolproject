@@ -15,7 +15,7 @@ export const revalidate = 60 * 60 * 24 * 5
 export const getStaticProps = (async () => {
 
   const team = new Team();
-  const data = await team.getAll();
+  const data = await team.getLastsTeamsPlayed();
 
   return {
     props: {
@@ -88,6 +88,7 @@ export default function Teams ({ teams }) {
                         <h3>{team.name}</h3>
                       </div>
                   </Link>
+                  <p style={{ color: '#fff', fontSize: '12px' }}>Last match: {new Date(team.start_time).toLocaleDateString()}</p>
                 </Item>
               </Grid>
             ))}

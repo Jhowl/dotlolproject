@@ -11,7 +11,7 @@ export const revalidate = 60 * 60 * 24 * 5
 export const getStaticProps = (async () => {
 
   const league = new League();
-  const data = await league.getLeagues();
+  const data = await league.getLastsLeagues();
 
   return {
     props: {
