@@ -6,9 +6,9 @@ import { TextField, Grid, Box, Typography } from '@mui/material';
 
 import Layout from '@/app/components/layout';
 
-export const revalidate = 60 * 60 * 24 * 5
+const revalidate = 60 * 60
 
-export const getStaticProps = (async () => {
+export const getStaticProps = async () => {
 
   const league = new League();
   const data = await league.getLastsLeagues();
@@ -17,8 +17,9 @@ export const getStaticProps = (async () => {
     props: {
       leagues: JSON.parse(JSON.stringify(data)) ,
     },
+    revalidate: revalidate
   }
-})
+}
 
 export default function Leagues ({ leagues }) {
   const [searchLeague, setSearchLeague] = useState('')
@@ -79,4 +80,3 @@ export default function Leagues ({ leagues }) {
     </Layout>
   )
 }
-

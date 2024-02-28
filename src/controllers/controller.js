@@ -63,7 +63,6 @@ class Controller {
     if (values && !Array.isArray(values)) {
       throw new Error('Values must be an array.');
     }
-
     const res = await pool.query(query, values);
     return res.rows;
   };

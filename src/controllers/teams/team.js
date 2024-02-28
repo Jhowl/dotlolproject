@@ -48,11 +48,11 @@ class Team extends Controller {
 
   getLastsTeamsPlayed() {
     const query = `
-      SELECT t.team_id, t.name, t.logo_url, MAX(m.start_time) AS start_time
+      SELECT t.team_id, t.name, t.logo_url, MAX(m.start_time) AS start_time, t.slug
       FROM teams t
       JOIN players p ON t.team_id = p.team_id
       JOIN matches m ON p.match_id = m.match_id
-      GROUP BY t.team_id, t.name, t.logo_url
+      GROUP BY t.team_id, t.name, t.logo_url, t.slug
       ORDER BY MAX(m.start_time)
       DESC;
     `;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import slugify from 'slugify'
+import Image from 'next/image'
 import Team from '@/controllers/teams/team'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -10,7 +10,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 
 import Layout from '@/app/components/layout';
 
-export const revalidate = 60 * 60 * 24 * 5
+const revalidate = 60 * 60
 
 export const getStaticProps = (async () => {
 
@@ -21,6 +21,7 @@ export const getStaticProps = (async () => {
     props: {
       teams: JSON.parse(JSON.stringify(data)) ,
     },
+    revalidate: revalidate
   }
 })
 
@@ -82,8 +83,9 @@ export default function Teams ({ teams }) {
               {filteredTeams?.map(team => (
                 <Grid key={team.id} xs={2}>
                   <Item style={{ backgroundColor: '#1A2027', color: '#fff' }} >
-                    <Link href={`teams/${slugify(team.name, { lower: true })}`}>
+                    <Link href={`teams/${team.slug}`}>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#1A2027'}}>
+                        {/* {!team.logo_url?.includes('ugc') ? (<Image src={team.logo_url} alt={team.name} width={100} height={100} />) : ''} */}
                         <img src={team.logo_url} alt={team.name} style={{ width: '100px', height: '100px', objectFit: 'contain' }}/>
                         <h3>{team.name}</h3>
                       </div>

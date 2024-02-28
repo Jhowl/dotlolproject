@@ -18,7 +18,6 @@ export async function getServerSideProps({ params }) {
   const { slug } = params;
 
   const team = new Team(slug);
-
   return {
     props: {
       team: JSON.parse(JSON.stringify(await team.data())),
