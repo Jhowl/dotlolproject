@@ -10,6 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '@/app/components/dashboard/listItems';
+import MenuComponent from '@/app/components/blocks/menu';
+
 import Box from '@mui/material/Box';
 import { orange } from '@mui/material/colors';
 import Container from '@mui/material/Container';
@@ -141,7 +143,7 @@ export default function Layout({ children, title }) {
           <List component="nav">
             {mainListItems}
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {/* {secondaryListItems} */}
           </List>
         </Drawer>
         <Box
