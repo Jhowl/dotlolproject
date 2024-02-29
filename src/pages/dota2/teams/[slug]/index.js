@@ -10,7 +10,7 @@ import TableStandarDeviation from '@/app/components/blocks/tableStandarDeviation
 import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
-
+import Chart from '@/app/components/blocks/chart';
 import Team from '@/controllers/teams/team'
 import request from '@/app/helper/request';
 
@@ -85,19 +85,20 @@ export default function TeamPage({team}) {
 
         </Grid>
 
-        {/* Chart
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
               display: 'flex',
               flexDirection: 'column',
-              height: 240,
+              width: '100%',
+
             }}
           >
-            <Chart />
+            <Chart data={teamData.chartData} />
           </Paper>
-        </Grid> */}
+        </Grid>
+
         <Grid item xs={12} md={4} lg={3}>
           Winning Percentage:
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', elevation: 12 }}>
@@ -105,9 +106,9 @@ export default function TeamPage({team}) {
           </Paper>
         </Grid>
 
-        <Statiscs data={teamData.statistics} />
-
         <Grid item xs={12}>
+          <Statiscs data={teamData.statistics} />
+
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row'}}>
             <Table data={teamData.heroesScoreAverage} />
             <TableStandarDeviation data={teamData.standartDeviations} />

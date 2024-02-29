@@ -18,7 +18,7 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Home" />
     </ListItemButton>
-    <ListSubheader inset>Games</ListSubheader>
+    <ListSubheader inset>Dota 2</ListSubheader>
     <ListItemButton component={Link} href="/dota2/teams">
       <ListItemIcon>
         <StoreIcon />

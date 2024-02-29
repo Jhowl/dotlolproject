@@ -298,6 +298,42 @@ class Matches extends Controller {
     return res[0];
   };
 
+  getDurationsAndScoreByDay = async () => {
+    const query = `
+      SELECT
+        DATE_TRUNC('day', start_time) AS interval_start,
+        AVG(duration) AS average_duration,
+        AVG(radiant_score + dire_score) AS total_score,
+        COUNT(match_id) AS total_matches
+      FROM
+        matches
+      ${this.getWhereFilter()}
+      GROUP BY
+        DATE_TRUNC('day', start_time)
+      ORDER BY
+        interval_start
+    `; // by day
+
+    // const query = `
+    //   SELECT
+    //     DATE_TRUNC('day', m.start_time) - INTERVAL '1 day' * MOD(EXTRACT(DAY FROM DATE_TRUNC('day', m.start_time)) - 1, 15) AS interval_start,
+    //     COUNT(m.match_id) AS total_matches,
+    //     SUM(m.radiant_score + m.dire_score) AS total_score,
+    //     AVG(m.duration) AS average_duration
+    //   FROM
+    //     matches m
+    //   ${this.getWhereFilter()}
+    //   GROUP BY
+    //     interval_start
+    //   ORDER BY
+    //     interval_start;
+    // `;
+
+
+    const res = await this.query(query, this.values);
+    return res;
+  }
+
   async statistics() {
     const columns =`
       MIN(radiant_score + dire_score) AS min_score,

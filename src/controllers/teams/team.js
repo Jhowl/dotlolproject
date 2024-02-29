@@ -94,6 +94,7 @@ class Team extends Controller {
       heroesScoreAverage,
       statistics,
       standartDeviations,
+      chartData,
       leagues,
       heroes
     ] = await Promise.all([
@@ -103,6 +104,7 @@ class Team extends Controller {
       matchesTeam.getAverageDireRadiantScoreByHero(),
       matchesTeam.statistics(),
       matchesTeam.getStandarDeviations(),
+      matchesTeam.getDurationsAndScoreByDay(),
       this.getTeamLeagues(),
       this.getHeroesPlayed()
     ]);
@@ -114,6 +116,7 @@ class Team extends Controller {
       heroesScoreAverage,
       statistics,
       standartDeviations,
+      chartData,
       leagues,
       heroes
     };
@@ -129,6 +132,7 @@ class Team extends Controller {
       matches,
       winrate,
       heroesScoreAverage,
+      chartData,
       statistics,
       standartDeviations
     ] = await Promise.all([
@@ -136,6 +140,7 @@ class Team extends Controller {
       matchesTeam.getMatches(),
       matchesTeam.getWinratePercentage(),
       matchesTeam.getAverageDireRadiantScoreByHero(),
+      matchesTeam.getDurationsAndScoreByDay(),
       matchesTeam.statistics(),
       matchesTeam.getStandarDeviations()
     ]);
@@ -145,6 +150,7 @@ class Team extends Controller {
       matches,
       winrate,
       heroesScoreAverage,
+      chartData,
       statistics,
       standartDeviations
     };

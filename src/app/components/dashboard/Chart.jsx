@@ -17,7 +17,7 @@ const data = [
   createData('12:00', 1500),
   createData('15:00', 2000),
   createData('18:00', 2400),
-  createData('21:00', 2400),
+  createData('21:00', 24020),
   createData('24:00'),
 ];
 
@@ -26,7 +26,7 @@ export default function Chart() {
 
   return (
     <React.Fragment>
-      <Title>Today</Title>
+      <Title>Matches Duration</Title>
       <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden' }}>
         <LineChart
           dataset={data}
