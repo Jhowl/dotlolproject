@@ -9,6 +9,7 @@ import TableStandarDeviation from '@/app/components/blocks/tableStandarDeviation
 import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
+import Chart from '@/app/components/blocks/chart';
 
 import League from '@/controllers/leagues/league'
 import request from '@/app/helper/request';
@@ -85,19 +86,19 @@ export default function LeaguePage({league}) {
           </Paper>
 
         </Grid>
-        {/* Chart
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
               display: 'flex',
               flexDirection: 'column',
-              height: 240,
+              width: '100%',
+
             }}
           >
-            <Chart />
+            <Chart data={leagueData.chartData} />
           </Paper>
-        </Grid> */}
+        </Grid>
 
         <Grid item xs={12}>
           <Paper
