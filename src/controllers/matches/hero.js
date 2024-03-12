@@ -81,6 +81,26 @@ class Hero extends Matches {
     return teams;
   }
 
+  async getLeagues(id) {
+    const query = `
+      SELECT DISTINCT
+        l.league_id,
+        l.name
+      FROM
+        players p
+      JOIN
+        matches m ON p.match_id = m.match_id
+      JOIN
+        leagues l ON m.league_id = l.league_id
+      WHERE
+        p.hero_id = $1
+      `;
+
+    const teams = await this.query(query, [id]);
+
+    return teams;
+  }
+
   getWinratePercentage = async (id) => {
     const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
     const teams = this.filters.teams ? `AND p.team_id IN (${this.filters.teams})` : '';

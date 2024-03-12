@@ -41,7 +41,7 @@ class Hero {
       matchesHero.statistics(),
       matchesHero.getStandarDeviations(),
       matchesHero.getTeams(this.hero.id),
-      matchesHero.getHeroes(this.hero.id)
+      matchesHero.getLeagues(this.hero.id)
     ]);
 
     return {
