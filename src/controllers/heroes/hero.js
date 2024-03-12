@@ -31,8 +31,9 @@ class Hero {
       heroesScoreAverage,
       statistics,
       standartDeviations,
+      teams,
       leagues,
-      teams
+      chartData
     ] = await Promise.all([
       this.getBySlug(),
       matchesHero.getMatches(),
@@ -41,7 +42,8 @@ class Hero {
       matchesHero.statistics(),
       matchesHero.getStandarDeviations(),
       matchesHero.getTeams(this.hero.id),
-      matchesHero.getLeagues(this.hero.id)
+      matchesHero.getLeagues(this.hero.id),
+      matchesHero.getDurationsAndScoreByDay()
     ]);
 
     return {
@@ -52,7 +54,8 @@ class Hero {
       statistics,
       standartDeviations,
       leagues,
-      teams
+      teams,
+      chartData
     };
   }
 
@@ -67,14 +70,16 @@ class Hero {
       winrate,
       heroesScoreAverage,
       statistics,
-      standartDeviations
+      standartDeviations,
+      chartData,
     ] = await Promise.all([
       this.getBySlug(),
       matchesHero.getMatches(),
       matchesHero.getWinratePercentage(),
       matchesHero.getAverageDireRadiantScoreByHero(),
       matchesHero.statistics(),
-      matchesHero.getStandarDeviations()
+      matchesHero.getStandarDeviations(),
+      matchesHero.getDurationsAndScoreByDay()
     ]);
 
     return {
@@ -83,7 +88,8 @@ class Hero {
       winrate,
       heroesScoreAverage,
       statistics,
-      standartDeviations
+      standartDeviations,
+      chartData
     };
   }
 }

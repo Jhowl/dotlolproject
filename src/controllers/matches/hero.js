@@ -66,7 +66,7 @@ class Hero extends Matches {
   async getTeams(id) {
     const query = `
       SELECT DISTINCT
-        t.team_id,
+        t.team_id AS id,
         t.name
       FROM
         players p
@@ -84,7 +84,7 @@ class Hero extends Matches {
   async getLeagues(id) {
     const query = `
       SELECT DISTINCT
-        l.league_id,
+        l.league_id AS id,
         l.name
       FROM
         players p

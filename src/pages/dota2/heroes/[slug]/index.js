@@ -10,6 +10,8 @@ import TableStandarDeviation from '@/app/components/blocks/tableStandarDeviation
 import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
+import Chart from '@/app/components/blocks/chart';
+
 
 import Hero from '@/controllers/heroes/hero'
 import request from '@/app/helper/request';
@@ -30,6 +32,7 @@ export default function HeroPage({hero}) {
   const [selectedTeams, setSelectedTeams] = React.useState([]);
   const [selectedLeagues, setSelectedLeagues] = React.useState([]);
   const [heroData, setTeamData] = React.useState(hero);
+  console.log('heroData', hero);
 
   const leagues = hero?.leagues
   const teams = hero?.teams
@@ -42,7 +45,7 @@ export default function HeroPage({hero}) {
       };
 
       try {
-        const res = await request(`/api/dota2/heroes/${heroData.info.slug}`, params);
+        const res = await request(`/api/dota2/heroes/${heroData.info.id}`, params);
         setTeamData(res.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -77,28 +80,29 @@ export default function HeroPage({hero}) {
 
   return (
     <Layout title={heroData.info.localized_name}>
+
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
             <MultipleSelect items={teams} title="Teams" onChange={handleTeamsOnChange} selected={selectedTeams} />
             <MultipleSelect items={leagues} title="Leagues" onChange={handleLeaguesOnChange} selected={selectedLeagues} />
           </Paper>
-
         </Grid>
 
-        {/* Chart
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
               display: 'flex',
               flexDirection: 'column',
-              height: 240,
+              width: '100%',
+
             }}
           >
-            <Chart />
+            <Chart data={heroData.chartData} />
           </Paper>
-        </Grid> */}
+        </Grid>
+
         <Grid item xs={12} md={4} lg={3}>
           Winning Percentage:
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', elevation: 12 }}>
