@@ -4,9 +4,9 @@ import { heroes } from "dotaconstants";
 import MatchesHero from "../matches/hero.js";
 
 class Hero {
-  constructor(slug) {
+  constructor({slug = '', id = null}) {
     this.slug = slug;
-    this.hero = { id: null };
+    this.hero = { id };
   }
 
   async setHero() {
@@ -60,9 +60,7 @@ class Hero {
   }
 
   async dataRest(filters) {
-    await this.setHero();
-
-    const matchesHero = new MatchesHero(this.team.hero_id, filters);
+    const matchesHero = new MatchesHero(this.hero.id, filters);
 
     const [
       info,

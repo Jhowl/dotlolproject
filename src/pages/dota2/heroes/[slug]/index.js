@@ -19,7 +19,7 @@ import request from '@/app/helper/request';
 export async function getServerSideProps({ params }) {
   const { slug } = params;
 
-  const hero = new Hero(slug);
+  const hero = new Hero({slug});
 
   return {
     props: {
