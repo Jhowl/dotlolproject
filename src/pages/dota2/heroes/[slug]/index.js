@@ -32,7 +32,6 @@ export default function HeroPage({hero}) {
   const [selectedTeams, setSelectedTeams] = React.useState([]);
   const [selectedLeagues, setSelectedLeagues] = React.useState([]);
   const [heroData, setTeamData] = React.useState(hero);
-  console.log('heroData', hero);
 
   const leagues = hero?.leagues
   const teams = hero?.teams
@@ -40,7 +39,7 @@ export default function HeroPage({hero}) {
   React.useEffect(() => {
     const fetchData = async () => {
       const params = {
-        heroes: selectedTeams.map(hero => hero.id),
+        teams: selectedTeams.map(hero => hero.id),
         leagues: selectedLeagues.map(league => league.id),
       };
 
@@ -79,7 +78,7 @@ export default function HeroPage({hero}) {
   }
 
   return (
-    <Layout title={heroData.info.localized_name}>
+    <Layout title={hero.info.localized_name}>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>

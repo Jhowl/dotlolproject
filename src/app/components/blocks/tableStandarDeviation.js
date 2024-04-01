@@ -9,9 +9,7 @@ const columns = [
   { field: '44', headerName: '44.5', width: 90 },
   { field: '48', headerName: '48.5', width: 90 },
   { field: '52', headerName: '52.5', width: 90 },
-
 ];
-
 
 export default function DataTable({data}) {
   if (!data) {

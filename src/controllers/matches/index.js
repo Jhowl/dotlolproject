@@ -109,14 +109,7 @@ class Matches extends Controller {
       return this.matches;
     }
 
-    const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
-    const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
-    const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
-    const startDate = this.filters.startDate ? `AND m.start_time >= '${this.filters.startDate}'` : '';
-    const endDate = this.filters.endDate ? `AND m.start_time <= '${this.filters.endDate}'` : '';
-
-    const where = this.whereInner ? this.whereInner : this.where;
-    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+    const search = this.getSearchCoditions();
 
     const query = `
       SELECT
@@ -156,15 +149,23 @@ class Matches extends Controller {
     return this.matches;
   }
 
-  getAverageDireRadiantScoreByHero = async () => {
+  getSearchCoditions = () => {
     const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
+    const teams = this.filters.teams ? `AND (m.radiant_team_id IN (${this.filters.teams}) OR m.dire_team_id IN (${this.filters.teams}))` : '';
     const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
     const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
     const startDate = this.filters.startDate ? `AND m.start_time >= '${this.filters.startDate}'` : '';
     const endDate = this.filters.endDate ? `AND m.start_time <= '${this.filters.endDate}'` : '';
 
     const where = this.whereInner ? this.whereInner : this.where;
-    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+    const search = `${where} ${teams} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+
+    return search;
+  }
+
+
+  getAverageDireRadiantScoreByHero = async () => {
+    const search = this.getSearchCoditions();
 
     const query = `
       WITH MatchHeroStats AS (
@@ -243,14 +244,7 @@ class Matches extends Controller {
   }
 
   getStandarDeviations = async () => {
-    const heroes = this.filters.heroes ? `AND EXISTS (SELECT 1 FROM players WHERE players.match_id = m.match_id AND players.hero_id IN (${this.filters.heroes}))` : '';
-    const leagues = this.filters.leagues ? `AND m.league_id IN (${this.filters.leagues})` : '';
-    const patches = this.filters.patches ? `AND m.patch IN (${this.filters.patches})` : '';
-    const startDate = this.filters.startDate ? `AND m.start_time >= ${this.filters.startDate}` : '';
-    const endDate = this.filters.endDate ? `AND m.start_time <= ${this.filters.endDate}` : '';
-
-    const where = this.whereInner ? this.whereInner : this.where;
-    const search = `${where} ${heroes} ${leagues} ${patches} ${startDate} ${endDate}`;
+    const search = this.getSearchCoditions();
 
     const query = `
       WITH MatchHeroStats AS (
