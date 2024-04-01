@@ -9,6 +9,7 @@ import Table from '@/app/components/blocks/tableHeroAverage';
 import TableStandarDeviation from '@/app/components/blocks/tableStandarDeviation';
 import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
+import Select from '@/app/components/blocks/Select';
 import Statiscs from '@/app/components/blocks/statiscs';
 import Chart from '@/app/components/blocks/chart';
 import Team from '@/controllers/teams/team'
@@ -28,6 +29,7 @@ export async function getServerSideProps({ params }) {
 export default function TeamPage({team}) {
   const [selectedHeroes, setSelectedHeroes] = React.useState([]);
   const [selectedLeagues, setSelectedLeagues] = React.useState([]);
+  const [selectedOutcome, setSelectedOutcome] = React.useState('');
   const [teamData, setTeamData] = React.useState(team);
 
   const leagues = team.leagues
@@ -38,6 +40,7 @@ export default function TeamPage({team}) {
       const params = {
         heroes: selectedHeroes.map(hero => hero.id),
         leagues: selectedLeagues.map(league => league.id),
+        outcome: selectedOutcome
       };
 
       try {
@@ -49,13 +52,13 @@ export default function TeamPage({team}) {
     };
 
     // Execute fetchData if either selectedHeroes or selectedLeagues change
-    if (selectedHeroes.length > 0 || selectedLeagues.length > 0) {
+    if (selectedHeroes.length > 0 || selectedLeagues.length > 0 || selectedOutcome.length !== '') {
       fetchData();
     } else {
       // Reset teamData to the original team if no filters are applied
       setTeamData(team);
     }
-  }, [selectedHeroes, selectedLeagues]);
+  }, [selectedHeroes, selectedLeagues, selectedOutcome]);
 
 
   const handleHeroesOnChange = (event) => {
@@ -74,6 +77,14 @@ export default function TeamPage({team}) {
     setSelectedLeagues(value);
   }
 
+  const handleOutcomeOnChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+
+    setSelectedOutcome(value);
+  }
+
   return (
     <Layout title={teamData.info.name}>
       <Grid container spacing={2}>
@@ -81,6 +92,24 @@ export default function TeamPage({team}) {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row' }}>
             <MultipleSelect items={heroes} title="Heroes" onChange={handleHeroesOnChange} selected={selectedHeroes} />
             <MultipleSelect items={leagues} title="Leagues" onChange={handleLeaguesOnChange} selected={selectedLeagues} />
+            <Select items={[
+              {
+                id: 1,
+                name: 'Win',
+                value: 'win'
+              },
+              {
+                id: 2,
+                name: 'Lose',
+                value: 'lose'
+              },
+              {
+                id: 3,
+                name: 'All',
+                value: 'all'
+              }
+            ]} title="Outcome" onChange={handleOutcomeOnChange} selected={selectedOutcome} />
+
           </Paper>
 
         </Grid>

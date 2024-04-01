@@ -45,6 +45,10 @@ class Matches extends Controller {
       preparedFilters.endDate = filters.endDate;
     }
 
+    if (filters.outcome) {
+      preparedFilters.outcome = filters.outcome;
+    }
+
     return preparedFilters;
   }
 
@@ -78,6 +82,23 @@ class Matches extends Controller {
 
     if (this.filters.endDate) {
       where += ` AND start_time <= ${this.filters.endDate}`;
+    }
+
+    if (this.filters.outcome) {
+      if (this.filters.outcome === 'win') {
+        where += ` AND (
+          (radiant_team_id = $1 and radiant_win = TRUE)
+          OR
+          (dire_team_id = $1 and radiant_win = FALSE)
+        ) `;
+
+      } else if (this.filters.outcome === 'lose') {
+        where += ` AND (
+          (radiant_team_id = $1 and radiant_win = FALSE)
+          OR
+          (dire_team_id = $1 and radiant_win = TRUE)
+        ) `;
+      }
     }
 
     return where;
