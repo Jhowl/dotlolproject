@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'heroName', headerName: 'Hero', width: 160 },
+  { field: 'heroName', headerName: 'Hero', width: 200 },
   { field: '44', headerName: '44.5', width: 90 },
   { field: '48', headerName: '48.5', width: 90 },
   { field: '52', headerName: '52.5', width: 90 },
