@@ -21,7 +21,6 @@ class Hero {
 
   async data() {
     await this.setHero();
-
     const matchesHero = new MatchesHero(this.hero.id);
 
     const [

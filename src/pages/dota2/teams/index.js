@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import Team from '@/controllers/teams/team'
+
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
+
+import Team from '@/controllers/teams/team'
 
 import Layout from '@/app/components/layout';
 

@@ -16,8 +16,7 @@ const MenuProps = {
   },
 };
 
-export default function blockSelect({items, title, onChange, selected}) {
-
+export default function blockSelect({items, title, onChange, selected, keyb=''}) {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
@@ -31,7 +30,7 @@ export default function blockSelect({items, title, onChange, selected}) {
         >
           {items?.map((item) => (
             <MenuItem
-              key={item.id}
+              key={`${keyb}-${item.value}`}
               value={item.value}
             >
               {item.name}

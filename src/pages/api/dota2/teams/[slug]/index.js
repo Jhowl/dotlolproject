@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     const data = await result.dataRest(rest)
 
-    res.status(200).send({ data })
+    res.status(200).send({ ...data })
 
   //   const result = await someAsyncOperation()
   //   res.status(200).send({ result })

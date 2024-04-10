@@ -94,17 +94,14 @@ export default function TeamPage({team}) {
             <MultipleSelect items={leagues} title="Leagues" onChange={handleLeaguesOnChange} selected={selectedLeagues} />
             <Select items={[
               {
-                id: 1,
                 name: 'Win',
                 value: 'win'
               },
               {
-                id: 2,
                 name: 'Lose',
                 value: 'lose'
               },
               {
-                id: 3,
                 name: 'All',
                 value: 'all'
               }

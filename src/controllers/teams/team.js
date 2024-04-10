@@ -46,6 +46,17 @@ class Team extends Controller {
     return leagues;
   }
 
+  getTeamsOrderedByNames() {
+    const query = `
+      SELECT
+        slug as value,
+        name
+      FROM teams
+      ORDER BY name
+    `;
+    return this.query(query);
+  }
+
   getLastsTeamsPlayed() {
     const query = `
       SELECT t.team_id, t.name, t.logo_url, MAX(m.start_time) AS start_time, t.slug
@@ -140,7 +151,7 @@ class Team extends Controller {
       matchesTeam.getMatches(),
       matchesTeam.getWinratePercentage(),
       matchesTeam.getAverageDireRadiantScoreByHero(),
-      matchesTeam.getDurationsAndScoreByDay(),
+      matchesTeam.getDurationsAndScoreByWeek(),
       matchesTeam.statistics(),
       matchesTeam.getStandarDeviations()
     ]);

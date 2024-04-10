@@ -316,7 +316,7 @@ class Matches extends Controller {
   getDurationsAndScoreByDay = async () => {
     const query = `
       SELECT
-        DATE_TRUNC('day', start_time) AS interval_start,
+        TO_CHAR(DATE_TRUNC('day', start_time), 'YYYY-MM-DD') AS interval_start,
         AVG(duration) AS average_duration,
         AVG(radiant_score + dire_score) AS total_score,
         COUNT(match_id) AS total_matches
@@ -324,7 +324,7 @@ class Matches extends Controller {
         matches
       ${this.getWhereFilter()}
       GROUP BY
-        DATE_TRUNC('day', start_time)
+        TO_CHAR(DATE_TRUNC('day', start_time), 'YYYY-MM-DD')
       ORDER BY
         interval_start
     `; // by day
@@ -346,7 +346,41 @@ class Matches extends Controller {
 
 
     const res = await this.query(query, this.values);
-    return res;
+    const labels = res?.map(item => item.interval_start);
+
+    const data = {
+      labels: labels,
+      chart: res,
+    };
+
+    return data;
+  }
+
+  getDurationsAndScoreByWeek = async () => {
+    const query = `
+      SELECT
+        TO_CHAR(DATE_TRUNC('week', start_time), 'YYYY-MM-DD') AS interval_start,
+        AVG(duration) AS average_duration,
+        AVG(radiant_score + dire_score) AS total_score,
+        COUNT(match_id) AS total_matches
+      FROM
+        matches
+      ${this.getWhereFilter()}
+      GROUP BY
+        TO_CHAR(DATE_TRUNC('week', start_time), 'YYYY-MM-DD')
+      ORDER BY
+        interval_start
+    `;
+
+    const res = await this.query(query, this.values);
+    const labels = res?.map(item => item.interval_start);
+
+    const data = {
+      labels: labels,
+      chart: res,
+    };
+
+    return data;
   }
 
   async statistics() {

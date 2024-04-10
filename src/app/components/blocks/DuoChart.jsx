@@ -34,16 +34,34 @@ const options = {
   },
 };
 
-export default function Chart({ data }) {
-  const data1 = {
-    labels: data.labels,
+export default function Chart({ data1, data2 }) {
+
+  // const labels = [
+  //   ...(data1?.labels ?? [])
+  // ].sort((a, b) => a - b)
+
+  //merge labels from both data sets and remove duplicates
+  const labels = [
+    ...(data1?.labels ?? []),
+    ...(data2?.labels ?? [])
+  ].filter((value, index, self) => self.indexOf(value) === index)
+
+  const data = {
+    labels: labels,
     datasets: [
       {
-        label: 'Duration',
-        data: data.chart?.map((item) => item.average_duration / 60),
+        label: data1?.name,
+        data: data1?.chart?.map((item) => item.average_duration / 60),
         fill: false,
-        backgroundColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(255, 0, 132)',
         borderColor: 'rgba(255, 99, 132, 0.2)',
+      },
+      {
+        label: data2?.name,
+        data: data2?.chart?.map((item) => item.average_duration / 60),
+        fill: false,
+        backgroundColor: 'rgb(54, 0, 235)',
+        borderColor: 'rgba(54, 162, 235, 0.2)',
       },
     ],
   };
@@ -53,7 +71,7 @@ export default function Chart({ data }) {
       <h1>Matches Duration</h1>
       <div style={{ width: '100%', flexGrow: 1 }}>
       <Line
-        data={data1}
+        data={data}
         options={options}
       />
       </div>
