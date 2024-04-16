@@ -88,7 +88,7 @@ export default function HeroPage({hero}) {
           </Paper>
         </Grid>
 
-        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
@@ -100,7 +100,7 @@ export default function HeroPage({hero}) {
           >
             <Chart data={heroData.chartData} />
           </Paper>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} md={4} lg={3}>
           Winning Percentage:

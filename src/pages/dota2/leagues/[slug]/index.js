@@ -86,7 +86,7 @@ export default function LeaguePage({league}) {
           </Paper>
 
         </Grid>
-        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
@@ -98,7 +98,7 @@ export default function LeaguePage({league}) {
           >
             <Chart data={leagueData.chartData} />
           </Paper>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12}>
           <Paper

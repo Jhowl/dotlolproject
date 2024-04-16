@@ -45,14 +45,14 @@ export default function TeamPage({team}) {
 
       try {
         const res = await request(`/api/dota2/teams/${teamData.info.slug}`, params);
-        setTeamData(res.data);
+        setTeamData(res);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     // Execute fetchData if either selectedHeroes or selectedLeagues change
-    if (selectedHeroes.length > 0 || selectedLeagues.length > 0 || selectedOutcome.length !== '') {
+    if (selectedHeroes.length > 0 || selectedLeagues.length > 0 || selectedOutcome !== '') {
       fetchData();
     } else {
       // Reset teamData to the original team if no filters are applied
@@ -111,7 +111,7 @@ export default function TeamPage({team}) {
 
         </Grid>
 
-        <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Paper
             sx={{
               p: 2,
@@ -123,7 +123,7 @@ export default function TeamPage({team}) {
           >
             <Chart data={teamData.chartData} />
           </Paper>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} md={4} lg={3}>
           Winning Percentage:
