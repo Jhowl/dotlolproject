@@ -179,11 +179,13 @@ class Matches extends Controller {
         JOIN
             players p ON m.match_id = p.match_id
         ${search}
+        GROUP BY
+            m.id, p.hero_id
     )
     , HeroAggregates AS (
         SELECT
             hero_id,
-            COUNT(match_id) AS heroMatches,
+            COUNT(DISTINCT match_id) AS heroMatches,
             SUM(score) AS matchesScore,
             SUM(duration) AS total_duration
         FROM
@@ -194,13 +196,12 @@ class Matches extends Controller {
     SELECT
         hero_id,
         heroMatches as total_matches,
-        matchesScore / heroMatches as score,
-        total_duration / heroMatches as duration
+        CASE WHEN heroMatches > 0 THEN matchesScore / heroMatches ELSE 0 END as average_score,
+        CASE WHEN heroMatches > 0 THEN total_duration / heroMatches ELSE 0 END as average_duration
     FROM
         HeroAggregates
     ORDER BY
-        heroMatches DESC;
-      `;
+        heroMatches DESC;`
 
     const res = await this.query(query, this.values);
     return res;
@@ -257,6 +258,8 @@ class Matches extends Controller {
         JOIN
             players p ON m.match_id = p.match_id
         ${search}
+        GROUP BY
+            m.match_id, p.hero_id, score
     )
     , HeroScoreData AS (
       SELECT

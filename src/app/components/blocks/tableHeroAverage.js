@@ -20,8 +20,8 @@ export default function DataTable({data}) {
       id: hero.hero_id,
       heroName: dotaconstants.heroes[hero.hero_id].localized_name,
       heroMatches: hero.total_matches,
-      score: parseFloat(hero.score).toFixed(2),
-      duration: convertSecondsToTime(hero.duration),
+      score: parseFloat(hero.average_score).toFixed(2),
+      duration: convertSecondsToTime(hero.average_duration),
     }
   }) || [];
 
