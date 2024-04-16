@@ -386,6 +386,71 @@ class Matches extends Controller {
     return data;
   }
 
+  async getStandartDeviationMatchesScore() {
+    const query = `
+      WITH MatchScores AS (
+        SELECT
+            m.id AS match_id,
+            m.radiant_score + m.dire_score AS total_score
+        FROM
+            matches m
+        ${this.getWhereFilter()}
+    )
+    SELECT
+        ROUND(COUNT(CASE WHEN total_score < 30.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_30_5,
+        ROUND(COUNT(CASE WHEN total_score < 32.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_32_5,
+        ROUND(COUNT(CASE WHEN total_score < 34.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_34_5,
+        ROUND(COUNT(CASE WHEN total_score < 36.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_36_5,
+        ROUND(COUNT(CASE WHEN total_score < 38.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_38_5,
+        ROUND(COUNT(CASE WHEN total_score < 40.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_40_5,
+        ROUND(COUNT(CASE WHEN total_score < 42.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_42_5,
+        ROUND(COUNT(CASE WHEN total_score < 44.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_44_5,
+        ROUND(COUNT(CASE WHEN total_score < 46.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_46_5,
+        ROUND(COUNT(CASE WHEN total_score < 48.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_48_5,
+        ROUND(COUNT(CASE WHEN total_score < 50.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_50_5,
+        ROUND(COUNT(CASE WHEN total_score < 52.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_52_5,
+        ROUND(COUNT(CASE WHEN total_score < 54.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_54_5,
+        ROUND(COUNT(CASE WHEN total_score < 56.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_56_5,
+        ROUND(COUNT(CASE WHEN total_score < 58.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_58_5,
+        ROUND(COUNT(CASE WHEN total_score < 60.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_60_5,
+        ROUND(COUNT(CASE WHEN total_score < 62.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_62_5,
+        ROUND(COUNT(CASE WHEN total_score < 64.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_64_5,
+        ROUND(COUNT(CASE WHEN total_score < 66.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_66_5,
+        ROUND(COUNT(CASE WHEN total_score < 68.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_68_5,
+        ROUND(COUNT(CASE WHEN total_score < 70.5 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_70_5
+    FROM
+        MatchScores;`;
+
+    const res = await this.query(query, this.values);
+    return res[0];
+  }
+
+  async getStandartDeviationMatchesDuration() {
+    const query =`
+      WITH MatchDurations AS (
+        SELECT
+            m.id AS match_id,
+            m.duration
+        FROM
+            matches m
+          ${this.getWhereFilter()}
+    )
+    SELECT
+        ROUND(COUNT(CASE WHEN duration < 1800 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_1800,
+        ROUND(COUNT(CASE WHEN duration < 1920 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_1920,
+        ROUND(COUNT(CASE WHEN duration < 2040 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2040,
+        ROUND(COUNT(CASE WHEN duration < 2160 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2160,
+        ROUND(COUNT(CASE WHEN duration < 2280 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2280,
+        ROUND(COUNT(CASE WHEN duration < 2400 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2400,
+        ROUND(COUNT(CASE WHEN duration < 2520 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2520,
+        ROUND(COUNT(CASE WHEN duration < 2640 THEN 1 END) * 100.0 / COUNT(*), 2) AS less_than_2640
+    FROM
+        MatchDurations;`
+
+    const res = await this.query(query, this.values);
+    return res[0];
+  }
+
   async statistics() {
     const columns =`
       MIN(radiant_score + dire_score) AS min_score,

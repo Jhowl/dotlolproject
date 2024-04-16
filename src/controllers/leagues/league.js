@@ -68,6 +68,8 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData,
       teams,
@@ -77,6 +79,8 @@ class League extends Controller {
       leagueMatches.getMatches(),
       leagueMatches.getAverageDireRadiantScoreByHero(),
       leagueMatches.leagueStatistics(),
+      leagueMatches.getStandartDeviationMatchesDuration(),
+      leagueMatches.getStandartDeviationMatchesScore(),
       leagueMatches.getStandarDeviations(),
       leagueMatches.getDurationsAndScoreByDay(),
       this.getTeams(),
@@ -88,6 +92,8 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData,
       teams,
@@ -105,6 +111,8 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData
     ] = await Promise.all([
@@ -112,6 +120,8 @@ class League extends Controller {
       leagueMatches.getMatches(),
       leagueMatches.getAverageDireRadiantScoreByHero(),
       leagueMatches.leagueStatistics(),
+      leagueMatches.getStandartDeviationMatchesDuration(),
+      leagueMatches.getStandartDeviationMatchesScore(),
       leagueMatches.getStandarDeviations(),
       leagueMatches.getDurationsAndScoreByDay()
     ]);
@@ -121,6 +131,8 @@ class League extends Controller {
       matches,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData
     };

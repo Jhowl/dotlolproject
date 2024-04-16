@@ -10,6 +10,8 @@ import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
 import Chart from '@/app/components/blocks/chart';
+import DurationStats from '@/app/components/blocks/DurationStats';
+import ScoreStats from '@/app/components/blocks/ScoreStats';
 
 import League from '@/controllers/leagues/league'
 import request from '@/app/helper/request';
@@ -111,6 +113,11 @@ export default function LeaguePage({league}) {
             }}
           >
             <Statiscs data={leagueData.statistics} />
+          </Paper>
+
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', fontSize: 14, backgroundColor: '#1A2027)' }}>
+            <DurationStats durationStats={leagueData.durationStats} />
+            <ScoreStats scoreStats={leagueData.scoreStats} />
           </Paper>
         </Grid>
 

@@ -13,7 +13,6 @@ const columns = [
   { field: 'duration', headerName: 'Duration Average', width: 160 },
 ];
 
-
 export default function DataTable({data}) {
   const rows = data?.map((hero) => {
     return {
@@ -24,7 +23,6 @@ export default function DataTable({data}) {
       duration: convertSecondsToTime(hero.average_duration),
     }
   }) || [];
-
 
   return (
     <div style={{ height: 600, width: '50%', padding: 'inherit' }}>

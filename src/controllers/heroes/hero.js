@@ -23,27 +23,35 @@ class Hero {
     await this.setHero();
     const matchesHero = new MatchesHero(this.hero.id);
 
+    const functions = [
+      this.getBySlug(),
+      matchesHero.getMatches(),
+      matchesHero.getWinratePercentage(),
+      matchesHero.getAverageDireRadiantScoreByHero(),
+      matchesHero.statistics(),
+      matchesHero.getStandartDeviationMatchesDuration(),
+      matchesHero.getStandartDeviationMatchesScore(),
+      matchesHero.getStandarDeviations(),
+      matchesHero.getTeams(this.hero.id),
+      matchesHero.getLeagues(this.hero.id),
+      matchesHero.getDurationsAndScoreByDay()
+    ];
+
+    const results = await Promise.all(functions);
+
     const [
       info,
       matches,
       winrate,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       teams,
       leagues,
       chartData
-    ] = await Promise.all([
-      this.getBySlug(),
-      matchesHero.getMatches(),
-      matchesHero.getWinratePercentage(),
-      matchesHero.getAverageDireRadiantScoreByHero(),
-      matchesHero.statistics(),
-      matchesHero.getStandarDeviations(),
-      matchesHero.getTeams(this.hero.id),
-      matchesHero.getLeagues(this.hero.id),
-      matchesHero.getDurationsAndScoreByDay()
-    ]);
+    ] = results;
 
     return {
       info,
@@ -51,6 +59,8 @@ class Hero {
       winrate,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       leagues,
       teams,
@@ -67,6 +77,8 @@ class Hero {
       winrate,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData,
     ] = await Promise.all([
@@ -75,6 +87,8 @@ class Hero {
       matchesHero.getWinratePercentage(),
       matchesHero.getAverageDireRadiantScoreByHero(),
       matchesHero.statistics(),
+      matchesHero.getStandartDeviationMatchesDuration(),
+      matchesHero.getStandartDeviationMatchesScore(),
       matchesHero.getStandarDeviations(),
       matchesHero.getDurationsAndScoreByDay()
     ]);
@@ -85,6 +99,8 @@ class Hero {
       winrate,
       heroesScoreAverage,
       statistics,
+      durationStats,
+      scoreStats,
       standartDeviations,
       chartData
     };

@@ -12,6 +12,9 @@ import MultipleSelect from '@/app/components/blocks/multiselect';
 import Statiscs from '@/app/components/blocks/statiscs';
 import Chart from '@/app/components/blocks/chart';
 
+import DurationStats from '@/app/components/blocks/DurationStats';
+import ScoreStats from '@/app/components/blocks/ScoreStats';
+
 
 import Hero from '@/controllers/heroes/hero'
 import request from '@/app/helper/request';
@@ -109,7 +112,14 @@ export default function HeroPage({hero}) {
           </Paper>
         </Grid>
 
-        <Statiscs data={heroData.statistics} />
+        <Grid item xs={12}>
+          <Statiscs data={heroData.statistics} />
+
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', fontSize: 14, backgroundColor: '#1A2027)' }}>
+            <DurationStats durationStats={heroData.durationStats} />
+            <ScoreStats scoreStats={heroData.scoreStats} />
+          </Paper>
+        </Grid>
 
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row'}}>

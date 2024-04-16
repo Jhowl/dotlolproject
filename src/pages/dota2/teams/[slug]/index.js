@@ -3,6 +3,9 @@ import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
+import Team from '@/controllers/teams/team'
+import request from '@/app/helper/request';
+
 import Layout from '@/app/components/layout';
 import Percent from '@/app/components/blocks/percent';
 import Table from '@/app/components/blocks/tableHeroAverage';
@@ -11,9 +14,12 @@ import DataTableMatches from '@/app/components/blocks/tableMatches';
 import MultipleSelect from '@/app/components/blocks/multiselect';
 import Select from '@/app/components/blocks/Select';
 import Statiscs from '@/app/components/blocks/statiscs';
+import DurationStats from '@/app/components/blocks/DurationStats';
+import ScoreStats from '@/app/components/blocks/ScoreStats';
+
 import Chart from '@/app/components/blocks/chart';
-import Team from '@/controllers/teams/team'
-import request from '@/app/helper/request';
+import { fontSize } from '@mui/system';
+
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -106,9 +112,7 @@ export default function TeamPage({team}) {
                 value: 'all'
               }
             ]} title="Outcome" onChange={handleOutcomeOnChange} selected={selectedOutcome} />
-
           </Paper>
-
         </Grid>
 
         {/* <Grid item xs={20} style={{ width: '100%', height: 700, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
@@ -134,6 +138,11 @@ export default function TeamPage({team}) {
 
         <Grid item xs={12}>
           <Statiscs data={teamData.statistics} />
+
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', fontSize: 14, backgroundColor: '#1A2027)' }}>
+            <DurationStats durationStats={teamData.durationStats} />
+            <ScoreStats scoreStats={teamData.scoreStats} />
+          </Paper>
 
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row'}}>
             <Table data={teamData.heroesScoreAverage} />
